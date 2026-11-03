@@ -88,10 +88,10 @@ Scope {
         implicitHeight: 104
         WlrLayershell.layer: WlrLayer.Overlay
         WlrLayershell.namespace: "etea:osd"
-        margins.bottom: 54 + (Theme.barOnTop ? 0 : Theme.barReserve)
+        margins.top: 4 + (Theme.barOnTop ? Theme.barReserve : 0)
 
         anchors {
-            bottom: true
+            top: true
         }
 
         mask: Region {}
@@ -102,10 +102,10 @@ Scope {
 
         Item {
             x: 10
-            y: 12 + (1 - panel.shown) * 40
+            y: 12 - (1 - panel.shown) * 24
             width: 320
             height: 80
-            opacity: Math.min(1, panel.shown)
+            opacity: Math.min(1, panel.shown) * 0.78
 
             HandCard {
                 anchors.fill: parent
