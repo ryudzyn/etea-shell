@@ -58,19 +58,18 @@ GridLayout {
             Layout.fillWidth: true
             Layout.preferredHeight: root.unit * 2.75
 
-            Star {
+            Rectangle {
                 visible: cell.isToday
                 anchors.centerIn: parent
-                size: root.unit * 1.45
-                lit: true
-                animated: false
-                opacity: 0.55
+                width: root.unit * 2.2
+                height: width
+                color: Theme.windowLit
             }
 
             Text {
                 anchors.centerIn: parent
                 text: cell.modelData.getDate()
-                color: cell.isToday ? "#1c1208" : Qt.alpha(root.ink, cell.modelData.getMonth() === root.month.getMonth() ? 0.9 : 0.3)
+                color: cell.isToday ? "#07090c" : Qt.alpha(root.ink, cell.modelData.getMonth() === root.month.getMonth() ? 0.9 : 0.3)
                 font.family: Theme.font
                 font.pixelSize: root.unit
             }

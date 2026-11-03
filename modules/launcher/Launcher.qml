@@ -419,7 +419,8 @@ Scope {
                                     size: 38
                                     lit: node.chosen
                                     animated: false
-                                    opacity: node.chosen ? 0.85 : 0.22
+                                    visible: node.chosen
+                                    opacity: 0.85
                                 }
 
                                 Image {

@@ -92,25 +92,22 @@ Item {
         }
     }
 
-    // Приціл: два тонкі відрізки, без сяйва
-    Shape {
-        anchors.fill: parent
+    // Позначка: дрібна -- суцільний квадрат, велика -- тонка рамка навколо вмісту
+    Rectangle {
+        readonly property bool frame: root.size > 12
+        readonly property real side: Math.round(frame ? root.size * 1.7 : root.size)
+        anchors.centerIn: parent
+        width: side
+        height: side
+        color: frame ? "transparent" : parent.ink
+        border.width: frame ? 1 : 0
+        border.color: parent.ink
         opacity: root.lit ? 1 : 0.55
 
         Behavior on opacity {
             NumberAnimation { duration: Theme.normal }
         }
-
-        ShapePath {
-            strokeWidth: 1
-            strokeColor: root.lit ? Theme.star : Theme.starAsleep
-            fillColor: "transparent"
-            startX: 0
-            startY: root.size
-
-            PathLine { x: root.size * 2; y: root.size }
-            PathMove { x: root.size; y: 0 }
-            PathLine { x: root.size; y: root.size * 2 }
-        }
     }
+
+    readonly property color ink: lit ? Theme.windowLit : Theme.starAsleep
 }
