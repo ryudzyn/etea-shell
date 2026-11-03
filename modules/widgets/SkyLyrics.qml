@@ -27,8 +27,8 @@ Column {
         return "";
     }
 
-    width: sky
-    spacing: sky * 0.012
+    width: sky * 0.62
+    spacing: sky * 0.006
 
     Connections {
         target: Lyrics
@@ -55,9 +55,9 @@ Column {
         horizontalAlignment: Text.AlignHCenter
         text: Lyrics.line(-1)
         elide: Text.ElideRight
-        color: Qt.alpha(Theme.skyInk, 0.3)
+        color: Qt.alpha(Theme.skyInk, 0.35)
         font.family: Theme.font
-        font.pixelSize: root.sky * 0.02
+        font.pixelSize: root.sky * 0.0125
     }
 
     KaraokeLine {
@@ -68,7 +68,7 @@ Column {
         resting: Lyrics.index < 0 || Lyrics.line(0) === ""
         progress: Lyrics.progress
         ink: Theme.skyInk
-        size: root.sky * 0.046
+        size: root.sky * 0.024
         opacity: 1 - root.enter * 0.7
 
         transform: Translate {
@@ -84,7 +84,7 @@ Column {
         elide: Text.ElideRight
         color: Qt.alpha(Theme.skyInk, 0.5)
         font.family: Theme.font
-        font.pixelSize: root.sky * 0.022
+        font.pixelSize: root.sky * 0.0125
     }
 
     Text {
@@ -94,6 +94,6 @@ Column {
         text: root.waiting
         color: Qt.alpha(Theme.skyInk, 0.6)
         font.family: Theme.font
-        font.pixelSize: root.sky * 0.018
+        font.pixelSize: root.sky * 0.0125
     }
 }

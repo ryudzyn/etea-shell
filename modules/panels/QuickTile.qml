@@ -31,7 +31,7 @@ Item {
 
     Rectangle {
         anchors.fill: parent
-        radius: 20
+        radius: 0
         color: Qt.alpha(root.tint, root.on ? 0.24 : pointer.containsMouse ? 0.12 : 0.07)
         border.width: 1
         border.color: Qt.alpha(root.tint, root.on ? 0.55 : 0.12)

@@ -5,5 +5,4 @@ ShaderEffect {
     property real from: 0.3 // where it starts to fade, as a share of the height
     property real to: 0.84 // where nothing is left
 
-    fragmentShader: Qt.resolvedUrl("../../shaders/dissolve.frag.qsb")
 }

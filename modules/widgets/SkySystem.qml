@@ -2,66 +2,70 @@ import QtQuick
 import qs.config
 import qs.services
 
-// The machine written on the sky as a constellation: a star per core, memory as the
-// nebula behind, comets for the network. The numbers sit underneath, small and quiet.
+// Телеметрія: сегментні шкали й числа, а не метафори.
 Column {
     id: root
 
     property real sky: 1080
     property var options: ({})
-    // Kept as text, so moving the widget doesn't rebuild its readings
-    readonly property string readings: (options?.readings ?? ["cpu", "memory", "network", "temperature"]).join()
 
-    // The numbers, held still behind windows like the stars above them
-    property var snap: ({ cpu: 0, memory: 0, download: 0, upload: 0, temperature: 0, cores: 0 })
+    // Числа тримаються нерухомо за вікнами, щоб не будити GPU
+    property var snap: ({ cpu: 0, memory: 0, download: 0, upload: 0, temperature: 0 })
 
     Binding on snap {
-        when: Planet.pageEmpty || root.snap.cores === 0
-        value: ({ cpu: Machine.cpu, memory: Machine.memory, download: Machine.download, upload: Machine.upload, temperature: Machine.temperature, cores: Machine.cores.length })
+        when: Planet.pageEmpty || root.snap.cpu === 0
+        value: ({ cpu: Machine.cpu, memory: Machine.memory, download: Machine.download, upload: Machine.upload, temperature: Machine.temperature })
         restoreMode: Binding.RestoreNone
     }
 
-    spacing: sky * 0.014
-    width: sky * 0.36
+    width: sky * 0.26
+    spacing: sky * 0.01
 
-    CoreConstellation {
-        width: parent.width
-        height: root.sky * 0.15
-        ink: Theme.skyInk
+    ObsHeader {
+        text: "ТЕЛЕМЕТРІЯ"
+        sky: root.sky
     }
 
-    Row {
-        spacing: root.sky * 0.032
+    Repeater {
+        model: [
+            { label: "CPU", part: root.snap.cpu, value: (root.snap.cpu * 100).toFixed(1) + " %" },
+            { label: "MEM", part: root.snap.memory, value: (root.snap.memory * 100).toFixed(1) + " %" },
+            { label: "TEMP", part: Math.min(1, root.snap.temperature / 100), value: Math.round(root.snap.temperature) + " °C" }
+        ]
 
-        Repeater {
-            model: [
-                { id: "cpu", label: root.snap.cores ? Lang.t("{0} cœurs", root.snap.cores) : Lang.t("Processeur"), value: `${Math.round(root.snap.cpu * 100)} %` },
-                { id: "memory", label: Lang.t("Mémoire"), value: `${Math.round(root.snap.memory * 100)} %` },
-                { id: "network", label: `↑ ${Machine.rate(root.snap.upload)}`, value: `↓ ${Machine.rate(root.snap.download)}` },
-                { id: "temperature", label: Lang.t("Chaleur"), value: root.snap.temperature ? `${Math.round(root.snap.temperature)}°` : "–" }
-            ].filter(reading => (root?.readings ?? "").includes(reading.id))
+        Column {
+            required property var modelData
+            width: parent.width
+            spacing: root.sky * 0.004
 
-            Column {
-                required property var modelData
+            ObsRow {
+                label: parent.modelData.label
+                value: parent.modelData.value
+                sky: root.sky
+            }
 
-                spacing: root.sky * 0.002
+            Row {
+                id: cells
+                readonly property var reading: parent.modelData
+                width: parent.width
+                spacing: 2
 
-                Text {
-                    text: parent.modelData.label
-                    color: Qt.alpha(Theme.skyInk, 0.65)
-                    font.family: Theme.font
-                    font.pixelSize: root.sky * 0.013
-                }
-
-                Text {
-                    text: parent.modelData.value
-                    color: Theme.skyInk
-                    font.family: Theme.font
-                    font.pixelSize: root.sky * 0.03
-                    font.weight: Font.Medium
-                    font.features: { "tnum": 1 }
+                Repeater {
+                    model: 30
+                    Rectangle {
+                        required property int index
+                        width: (cells.width - 29 * 2) / 30
+                        height: root.sky * 0.0065
+                        color: (index + 0.5) / 30 < cells.reading.part ? Theme.skyInk : Qt.alpha(Theme.skyInk, 0.12)
+                    }
                 }
             }
         }
+    }
+
+    ObsRow {
+        label: "NET"
+        value: "↓ " + Machine.rate(root.snap.download) + "   ↑ " + Machine.rate(root.snap.upload)
+        sky: root.sky
     }
 }

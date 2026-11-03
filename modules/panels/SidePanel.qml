@@ -105,7 +105,7 @@ Scope {
                 seed: `panel-${root.side}`
                 tint: root.tint
                 rise: 0.06
-                radius: 26
+                radius: 0
             }
 
             // The clipping edge sits a little outside the content, so the stars and ink

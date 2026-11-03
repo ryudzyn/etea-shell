@@ -51,7 +51,7 @@ Item {
         seed: "day"
         tint: root.light
         rise: root.day ? 0.18 + 0.12 * Math.sin(Math.PI * root.along) : 0.1
-        radius: 22
+        radius: 0
         alive: root.alive
 
         Behavior on tint {
@@ -76,7 +76,7 @@ Item {
             anchors.centerIn: parent
             width: 52
             height: 52
-            radius: 26
+            radius: 0
             color: Qt.alpha(root.edge ? "#ffb38a" : "#ffe2a8", 0.16)
         }
 
@@ -85,7 +85,7 @@ Item {
             anchors.centerIn: parent
             width: 30
             height: 30
-            radius: 15
+            radius: 0
             color: Qt.alpha(root.edge ? "#ffc9a0" : "#fff1cf", 0.35)
         }
 
@@ -94,7 +94,7 @@ Item {
             anchors.centerIn: parent
             width: 16
             height: 16
-            radius: 8
+            radius: 0
             color: root.edge ? "#ffd2ad" : "#fff6e0"
         }
 

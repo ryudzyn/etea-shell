@@ -28,7 +28,7 @@ Item {
     Rectangle {
         anchors.fill: parent
         anchors.margins: -2
-        radius: 11
+        radius: 0
         color: Menus.tint
         opacity: root.active ? 0.18 : pointer.containsMouse ? 0.09 : 0
 

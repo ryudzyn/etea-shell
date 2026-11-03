@@ -60,7 +60,7 @@ Item {
                 visible: cover.status === Image.Ready
                 Layout.preferredWidth: 92
                 Layout.preferredHeight: 92
-                radius: 14
+                radius: 0
                 color: "transparent"
 
                 Image {

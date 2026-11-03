@@ -26,7 +26,7 @@ Item {
         visible: root.image !== ""
         anchors.fill: parent
         anchors.margins: 12
-        radius: 12
+        radius: 0
         color: "transparent"
 
         Image {

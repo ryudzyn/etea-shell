@@ -7,6 +7,7 @@ Item {
 
     anchors.fill: parent
     clip: true
+    visible: false
 
     function burst(x, y) {
         spark.x = x;

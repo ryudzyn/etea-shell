@@ -51,6 +51,8 @@ Singleton {
     ]
 
     property string preview: "" // a world being tried on, never saved
+    property alias deepSpace: saved.deepSpace // шейдер теми "Глибокий космос", порожньо -- планети
+    property alias deepAngle: saved.deepAngle // ракурс камери, радіани
     property alias theme: saved.theme
     property alias customPlanets: saved.customPlanets
     property alias pace: saved.pace // "daily" is quick, "ceremony" takes its time
@@ -133,6 +135,8 @@ Singleton {
         JsonAdapter {
             id: saved
 
+            property string deepSpace: ""
+            property real deepAngle: 0
             property string theme: "aster"
             property var customPlanets: []
             property string pace: "daily"

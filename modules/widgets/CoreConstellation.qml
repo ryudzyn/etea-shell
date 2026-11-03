@@ -225,7 +225,7 @@ Item {
             y: -height / 2
             width: root.width * 0.18
             height: 2
-            radius: 1
+            radius: 0
             gradient: Gradient {
                 orientation: Gradient.Horizontal
                 GradientStop { position: 0; color: "transparent" }

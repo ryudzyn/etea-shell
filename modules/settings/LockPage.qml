@@ -85,7 +85,7 @@ ColumnLayout {
 
             width: photo.width
             height: photo.height
-            radius: 14
+            radius: 0
             visible: false
             layer.enabled: true
         }

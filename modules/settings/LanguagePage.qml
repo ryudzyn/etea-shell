@@ -104,7 +104,7 @@ ColumnLayout {
         Rectangle {
             width: 260
             height: 36
-            radius: 12
+            radius: 0
             color: Qt.alpha(Theme.windowLit, field.activeFocus ? 0.14 : 0.08)
 
             TextInput {

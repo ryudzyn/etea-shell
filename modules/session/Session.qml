@@ -31,10 +31,10 @@ Scope {
         id: panel
 
         readonly property var actions: [
-            { icon: "lock", label: Lang.t("Verrouiller"), tint: "#8fc7e8", run: () => Menus.locked = true },
-            { icon: "sleep", label: Lang.t("Veille"), tint: "#b9a2f0", command: ["systemctl", "suspend"] },
-            { icon: "logout", label: Lang.t("Déconnecter"), tint: "#ffc98a", confirm: true, command: ["hyprctl", "dispatch", "hl.dsp.exit()"] },
-            { icon: "restart", label: Lang.t("Redémarrer"), tint: "#e98fb0", confirm: true, command: ["systemctl", "reboot"] },
+            { icon: "lock", label: Lang.t("Verrouiller"), tint: Theme.windowLit, run: () => Menus.locked = true },
+            { icon: "sleep", label: Lang.t("Veille"), tint: Theme.windowLit, command: ["systemctl", "suspend"] },
+            { icon: "logout", label: Lang.t("Déconnecter"), tint: Theme.windowLit, confirm: true, command: ["hyprctl", "dispatch", "hl.dsp.exit()"] },
+            { icon: "restart", label: Lang.t("Redémarrer"), tint: Theme.windowLit, confirm: true, command: ["systemctl", "reboot"] },
             { icon: "power", label: Lang.t("Éteindre"), tint: "#f0705f", confirm: true, command: ["systemctl", "poweroff"] }
         ]
 
@@ -190,7 +190,7 @@ Scope {
                             x: 0
                             width: 150
                             height: 150
-                            radius: 75
+                            radius: 0
                             seed: choice.modelData.label
                             tint: choice.modelData.tint
                             ink: choice.focused ? 1 : 0.55

@@ -163,7 +163,7 @@ ColumnLayout {
                 Layout.fillWidth: true
                 Layout.bottomMargin: 4
                 implicitHeight: 3
-                radius: 2
+                radius: 0
                 color: Qt.alpha(Theme.windowLit, 0.18)
 
                 Rectangle {
@@ -193,7 +193,7 @@ ColumnLayout {
 
                     Rectangle {
                         anchors.fill: parent
-                        radius: 12
+                        radius: 0
                         color: Theme.windowLit
                         opacity: pointer.containsMouse ? 0.07 : 0
                     }
@@ -254,7 +254,7 @@ ColumnLayout {
             Rectangle {
                 Layout.fillWidth: true
                 Layout.preferredHeight: 42
-                radius: 14
+                radius: 0
                 color: Qt.alpha(Theme.windowLit, 0.08)
                 border.width: 1
                 border.color: Qt.alpha(Theme.windowLit, entry.activeFocus ? 0.6 : 0.18)

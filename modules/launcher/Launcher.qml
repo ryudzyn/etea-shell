@@ -443,7 +443,7 @@ Scope {
                                     y: -height / 2
                                     width: 40
                                     height: 40
-                                    radius: 20
+                                    radius: 0
                                     color: Qt.alpha(Theme.windowLit, 0.28)
                                     border.width: 1
                                     border.color: Qt.alpha(Theme.windowLit, 0.6)
@@ -608,7 +608,7 @@ Scope {
                         visible: (panel.counts[index] ?? 0) > 0
                         width: tab.implicitWidth + 26
                         height: 30
-                        radius: 15
+                        radius: 0
                         color: Qt.alpha(Theme.windowLit, current ? 0.3 : press.containsMouse ? 0.14 : 0.06)
                         border.width: 1
                         border.color: Qt.alpha(Theme.windowLit, current ? 0.7 : 0.2)

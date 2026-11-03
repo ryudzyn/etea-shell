@@ -9,12 +9,12 @@ Item {
     id: root
 
     property string seed: "etea"
-    property real radius: 18
+    property real radius: 0
     property real ink: 0.72 // how strong the line is
     property color tint: Theme.windowLit
     property real rise: 0.16 // how high the horizon sits inside the card
     // The sky stops moving when nobody can see it, closed menus and panels included
-    property bool alive: visible && (Window.window?.visible ?? false)
+    property bool alive: false
     property real starSpacing: 130 // one star every so often along the sides, 0 keeps only the corners
     property real starScale: 1
 
@@ -34,9 +34,8 @@ Item {
 
     // The stars sit on the outline: one on each corner, and a few scattered along the sides
     readonly property var stars: {
+        return [];
         const w = width, h = height;
-        if (w <= 0 || h <= 0)
-            return [];
         const random = randomFrom(phase);
         const corner = radius * 0.29;
         const s = starScale;
@@ -93,17 +92,21 @@ Item {
         return points;
     }
 
-    onWidthChanged: drawing.requestPaint()
-    onHeightChanged: drawing.requestPaint()
-    onInkChanged: drawing.requestPaint()
-    onTintChanged: drawing.requestPaint()
 
     HoverHandler {
         id: hoverWatch
     }
 
+    Rectangle {
+        anchors.fill: parent
+        color: Theme.cardDeep
+        border.width: 1
+        border.color: Qt.alpha(root.tint, root.ink * 0.6)
+    }
+
     ShaderEffect {
         id: sky
+        visible: false
 
         property color deep: Theme.cardDeep
         property color tint: root.tint
@@ -153,50 +156,6 @@ Item {
     Component.onDestruction: {
         if (ticking)
             Drift.leave();
-    }
-
-    Canvas {
-        id: drawing
-
-        readonly property real bleed: 6
-
-        x: -bleed
-        y: -bleed
-        width: root.width + bleed * 2
-        height: root.height + bleed * 2
-        renderStrategy: Canvas.Immediate
-
-        onPaint: {
-            const g = getContext("2d");
-            g.reset();
-            g.translate(bleed, bleed);
-
-            const shape = root.outline(0, root.phase);
-
-            // Two passes of the line, and it lifts off the paper around each star
-            const stroke = (points, width, alpha) => {
-                g.globalAlpha = alpha;
-                g.lineWidth = width;
-                g.strokeStyle = String(root.tint);
-                g.lineCap = "round";
-                g.beginPath();
-                let pen = false;
-                points.concat([points[0]]).forEach(([x, y]) => {
-                    const near = root.stars.some(star => Math.hypot(star.x - x, star.y - y) < star.size + 5);
-                    if (near)
-                        pen = false;
-                    else if (pen)
-                        g.lineTo(x, y);
-                    else {
-                        g.moveTo(x, y);
-                        pen = true;
-                    }
-                });
-                g.stroke();
-            };
-            stroke(shape, 1.3, root.ink);
-            stroke(root.outline(-1.6, root.phase + 5), 0.8, root.ink * 0.38);
-        }
     }
 
     Repeater {

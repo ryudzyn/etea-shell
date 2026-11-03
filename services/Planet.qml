@@ -53,14 +53,14 @@ Singleton {
     property real systemLevel: 0
     property real systemScroll: 0 // how far along the row of planets we are, between two of them while dragging
     readonly property int systemChoice: {
-        const count = Planets.all.length;
+        const count = Planets.solar.length;
         return (Math.round(systemScroll) % count + count) % count;
     }
 
     // Whatever comes to the front gets tried on by the whole shell
     onSystemChoiceChanged: {
         if (inSystem)
-            Config.preview = Planets.all[systemChoice].id;
+            Config.preview = Planets.solar[systemChoice];
     }
 
     // Turning the planet by hand, up in orbit
@@ -225,20 +225,36 @@ Singleton {
 
     // Going up: ground, then orbit, then the whole system, then back home
     function toggleOrbit() {
+        // Super+Tab одразу показує Сонячну систему, ще раз -- назад на поточний стіл
         if (phase === Planet.Phase.Idle)
             enterOrbit();
-        else if (orbiting && !inSystem)
-            enterSystem();
-        else if (inSystem)
-            land(Theme.planet.id);
+        else if (orbiting)
+            landPage(current);
     }
 
     // One level down at a time
     function goDown() {
-        if (inSystem)
-            leaveSystem();
-        else if (orbiting)
-            leaveOrbit(current);
+        if (orbiting)
+            landPage(current);
+    }
+
+    // Час шейдера теми "Глибокий космос": один на всі копії фону
+    property real deepTime: 0
+
+    IpcHandler {
+        target: "deep"
+
+        function set(id: string): void {
+            Config.deepSpace = id === "off" ? "" : id;
+        }
+
+        function rotate(): void {
+            Config.deepAngle += Math.PI / 2;
+        }
+
+        function state(): string {
+            return Config.deepSpace || "off";
+        }
     }
 
     function holdSpin() {
@@ -267,8 +283,8 @@ Singleton {
 
     function enterSystem() {
         systemSlide.stop();
-        systemScroll = Math.max(0, Planets.all.findIndex(planet => planet.id === Theme.planet.id));
-        Config.preview = Planets.all[systemChoice].id;
+        systemScroll = Math.max(0, (current - 1) % Planets.solar.length);
+        Config.preview = Planets.solar[systemChoice];
         inSystem = true;
         systemShift.to = 1;
         systemShift.restart();
@@ -314,6 +330,12 @@ Singleton {
         worldWanted(id);
     }
 
+    // Вибір столу в Сонячній системі: летимо на його планету
+    function landPage(page) {
+        leaveSystem();
+        leaveOrbit(page);
+    }
+
     // Moving to a new planet: the theme changes and we come down onto it
     function land(id) {
         Config.theme = id;
@@ -338,6 +360,7 @@ Singleton {
         goingUp = false;
         phase = Planet.Phase.Orbit;
         rise.restart();
+        enterSystem();
     }
 
     // Going back down, turning to the chosen page on the way

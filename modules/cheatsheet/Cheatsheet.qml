@@ -20,25 +20,23 @@ Scope {
 
     // ETEA's shortcuts, set up by scripts/dev.sh. mods and key match Hyprland's own names.
     readonly property var own: [
-        { mods: 64, key: "SUPER_L", keys: "Super", label: Lang.t("Ouvrir le lanceur") },
-        { mods: 64, key: "code:10", keys: "Super + 1 … 0", label: Lang.t("Aller à une page") },
-        { mods: 68, key: "Right", keys: "Ctrl + Super + ← →", label: Lang.t("Page précédente ou suivante") },
-        { mods: 64, key: "mouse_up", keys: `Super + ${Lang.t("Molette")}`, label: Lang.t("Tourner la page, ou changer la taille d'un widget") },
-        { mods: 64, key: "Tab", keys: "Super + Tab", label: Lang.t("Monter en orbite, puis vers les planètes") },
-        { mods: 65, key: "Tab", keys: `Super + ${Lang.t("Maj")} + Tab`, label: Lang.t("Redescendre") },
-        { mods: 64, key: "Q", keys: "Super + Q", label: Lang.t("Fermer la fenêtre") },
-        { mods: 64, key: "L", keys: "Super + L", label: Lang.t("Verrouiller") },
-        { mods: 64, key: "A", keys: "Super + A", label: Lang.t("Panneau de gauche") },
-        { mods: 64, key: "N", keys: "Super + N", label: Lang.t("Panneau de droite") },
-        { mods: 64, key: "V", keys: "Super + V", label: Lang.t("Presse-papiers") },
-        { mods: 65, key: "S", keys: `Super + ${Lang.t("Maj")} + S`, label: Lang.t("Capture") },
-        { mods: 64, key: "Escape", keys: `Super + ${Lang.t("Échap")}`, label: Lang.t("Session") },
-        { mods: 64, key: "Comma", keys: "Super + ,", label: Lang.t("Réglages") },
-        { mods: 64, key: "Slash", keys: "Super + /", label: Lang.t("Ces raccourcis") },
-        { mods: 64, key: "mouse:272", keys: `Super + ${Lang.t("glisser")}`, label: Lang.t("Déplacer un widget, ou une fenêtre") },
-        { mods: 0, key: "", keys: Lang.t("4 doigts ← →"), label: Lang.t("Changer de page") },
-        { mods: 0, key: "", keys: Lang.t("4 doigts ↑ ↓"), label: Lang.t("Orbite") }
+        { mods: 64, key: "SUPER_L", keys: "Super", label: "Запуск програм" },
+        { mods: 64, key: "Tab", keys: "Super + Tab", label: "Сонячна система: вибір столу" },
+        { mods: 65, key: "Tab", keys: "Super + Shift + Tab", label: "Назад із Сонячної системи" },
+        { mods: 64, key: "code:10", keys: "Super + 1 … 0", label: "Перелетіти на стіл" },
+        { mods: 68, key: "Right", keys: "Ctrl + Super + ← →", label: "Сусідній стіл" },
+        { mods: 64, key: "mouse_up", keys: "Super + коліщатко", label: "Сусідній стіл, а над віджетом -- його розмір" },
+        { mods: 64, key: "A", keys: "Super + A", label: "Ліва панель: календар, завдання, таймер" },
+        { mods: 64, key: "N", keys: "Super + N", label: "Центр керування і сповіщення" },
+        { mods: 64, key: "Q", keys: "Super + Q", label: "Закрити вікно" },
+        { mods: 64, key: "V", keys: "Super + V", label: "Історія буфера обміну" },
+        { mods: 65, key: "S", keys: "Super + Shift + S", label: "Захоплення екрана, Tab -- запис" },
+        { mods: 64, key: "Comma", keys: "Super + ,", label: "Налаштування" },
+        { mods: 64, key: "Slash", keys: "Super + /", label: "Ці підказки" },
+        { mods: 64, key: "mouse:272", keys: "Super + перетягування", label: "Посунути віджет або вікно" }
     ]
+    // Ті самі дії, що вже описані рядком вище: у шпаргалці другий раз не потрібні
+    readonly property var repeats: ["68 Left", "64 mouse_down", "64 SUPER_R"]
 
     readonly property var shown: {
         const wanted = search.trim().toLowerCase();
@@ -106,8 +104,8 @@ Scope {
     }
 
     function build(binds) {
-        const taken = own.map(bind => `${bind.mods} ${bind.key}`);
-        const found = [{ name: "ETEA", binds: own }];
+        const taken = own.map(bind => `${bind.mods} ${bind.key}`).concat(repeats);
+        const found = [{ name: "Оболонка", binds: own }];
         for (const bind of binds) {
             if (!bind.description || taken.includes(`${bind.modmask} ${bind.key}`))
                 continue;
@@ -235,7 +233,7 @@ Scope {
                 Rectangle {
                     Layout.preferredWidth: 320
                     implicitHeight: 38
-                    radius: 14
+                    radius: 0
                     color: Qt.alpha(Theme.windowLit, 0.1)
 
                     TextInput {
@@ -347,7 +345,7 @@ Scope {
                                                     Layout.alignment: Qt.AlignTop
                                                     implicitWidth: keys.implicitWidth + 16
                                                     implicitHeight: 24
-                                                    radius: 8
+                                                    radius: 0
                                                     color: Qt.alpha(Theme.windowLit, 0.14)
                                                     border.width: 1
                                                     border.color: Qt.alpha(Theme.windowLit, 0.3)

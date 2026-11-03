@@ -134,6 +134,7 @@ Item {
             }
 
             FrameStars {
+                visible: false // прибрано: зірки на рамках вікон не потрібні
                 anchors.fill: parent
                 seed: frame.modelData?.address ?? ""
                 windowWidth: frame.width

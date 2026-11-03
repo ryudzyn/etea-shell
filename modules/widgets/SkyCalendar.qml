@@ -4,15 +4,15 @@ import Quickshell
 import qs.config
 import qs.modules.bar
 
-// The month written on the sky, with tonight's moon beside its name.
+// Календар приладом: заголовок, фаза Місяця рядком, сітка місяця.
 ColumnLayout {
     id: root
 
     property real sky: 1080
     property var options: ({})
 
-    spacing: sky * 0.01
-    width: sky * 0.27
+    spacing: sky * 0.008
+    width: sky * 0.26
 
     SystemClock {
         id: clock
@@ -20,51 +20,40 @@ ColumnLayout {
         precision: SystemClock.Hours
     }
 
+    ObsHeader {
+        Layout.fillWidth: true
+        text: "КАЛЕНДАР · " + Qt.locale(Config.locale).toString(clock.date, "MMMM yyyy").toUpperCase()
+        sky: root.sky
+    }
+
     RowLayout {
         Layout.fillWidth: true
-        spacing: root.sky * 0.012
-
-        Text {
-            Layout.fillWidth: true
-            text: Qt.locale(Config.locale).toString(clock.date, "MMMM")
-            color: Theme.skyInk
-            font.family: Theme.font
-            font.pixelSize: root.sky * 0.034
-            font.weight: Font.Medium
-            renderType: Text.CurveRendering
-
-            layer.enabled: true
-            layer.smooth: true
-            layer.textureSize: Qt.size(width * 2, height * 2) // drawn at double size so the curves come out smooth
-            layer.effect: Dissolve {
-                from: 0.4
-                to: 1.3
-            }
-        }
+        spacing: root.sky * 0.008
 
         MoonDisc {
             id: moon
 
-            Layout.preferredWidth: Math.round(root.sky * 0.028)
-            Layout.preferredHeight: Math.round(root.sky * 0.028)
+            Layout.preferredWidth: Math.round(root.sky * 0.018)
+            Layout.preferredHeight: Math.round(root.sky * 0.018)
             at: clock.date
             dark: Qt.alpha(Theme.skyInk, 0.18)
             light: Theme.skyInk
         }
-    }
 
-    Text {
-        text: moon.phaseName
-        color: Qt.alpha(Theme.skyInk, 0.7)
-        font.family: Theme.font
-        font.pixelSize: root.sky * 0.013
+        Text {
+            Layout.fillWidth: true
+            text: moon.phaseName
+            color: Qt.alpha(Theme.skyInk, 0.62)
+            font.family: Theme.font
+            font.pixelSize: root.sky * 0.0125
+        }
     }
 
     MonthGrid {
         Layout.fillWidth: true
         month: clock.date
         today: clock.date
-        unit: root.sky * 0.016
+        unit: root.sky * 0.0125
         ink: Theme.skyInk
         heading: Qt.alpha(Theme.skyInk, 0.6)
     }

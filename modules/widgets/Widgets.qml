@@ -15,6 +15,8 @@ Item {
     readonly property bool skyStyle: Config.widgetStyle === "sky"
     readonly property var files: skyStyle ? {
         clock: "GiantClock.qml",
+        object: "SkyObject.qml",
+        sky: "SkyEphemeris.qml",
         system: "SkySystem.qml",
         media: "SkyMedia.qml",
         weather: "SkyWeather.qml",
@@ -24,6 +26,8 @@ Item {
         lyrics: "SkyLyrics.qml"
     } : {
         clock: "ClockWidget.qml",
+        object: "SkyObject.qml",
+        sky: "SkyEphemeris.qml",
         system: "SystemWidget.qml",
         media: "MediaWidget.qml",
         weather: "WeatherWidget.qml",
@@ -101,7 +105,7 @@ Item {
 
                 Rectangle {
                     anchors.fill: parent
-                    radius: 20
+                    radius: 0
                     color: Qt.alpha(Theme.skyInk, 0.04)
                     border.width: 1
                     border.color: Qt.alpha(Theme.skyInk, 0.32)

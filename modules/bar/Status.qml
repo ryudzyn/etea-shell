@@ -56,7 +56,7 @@ Row {
                 anchors.verticalCenter: parent.verticalCenter
                 width: 8
                 height: 8
-                radius: 4
+                radius: 0
                 color: "#f0705f"
 
                 SequentialAnimation on opacity {

@@ -22,11 +22,13 @@ Scope {
     readonly property string pages: Config.pageTransition === "slide" ? `
         hl.curve("eteaSlide", { type = "bezier", points = { { 0.05, 0.9 }, { 0.1, 1.05 } } })
         hl.animation({ leaf = "workspaces", enabled = true, speed = 6, bezier = "eteaSlide", style = "slide" })
-        pcall(hl.gesture, { fingers = 4, direction = "horizontal", action = "unset" })
+        if ETEA_SIDE_GESTURE then pcall(hl.gesture, { fingers = 4, direction = "horizontal", action = "unset" }) end
+        ETEA_SIDE_GESTURE = true
         hl.gesture({ fingers = 4, direction = "horizontal", action = "workspace" })
     ` : `
         hl.animation({ leaf = "workspaces", enabled = false })
-        pcall(hl.gesture, { fingers = 4, direction = "horizontal", action = "unset" })
+        if ETEA_SIDE_GESTURE then pcall(hl.gesture, { fingers = 4, direction = "horizontal", action = "unset" }) end
+        ETEA_SIDE_GESTURE = true
         -- The start of the swipe, every move and its end reach the shell as events
         hl.gesture({ fingers = 4, direction = "horizontal", action = {
             start = function()
@@ -115,6 +117,7 @@ Scope {
 
         -- Hyprland tells ETEA a window is coming before it appears, so the screen can be
         -- frozen in time. Neighbours start moving slowly, just long enough for that photo.
+        hl.curve("emphasizedDecel", { type = "bezier", points = { { 0.05, 0.7 }, { 0.1, 1 } } })
         hl.curve("eteaSlowStart", { type = "bezier", points = { { 0.7, 0 }, { 0.3, 1 } } })
         ETEA_MAKE_ROOM = ${Theme.openMakeRoom / 100}
         if not ETEA_BIRTHS then

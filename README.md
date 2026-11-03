@@ -1,3 +1,8 @@
+> **Форк для Nebula OS**, гілка `nebula`. Оригінал: [SDcold/etea-shell](https://github.com/SDcold/etea-shell), GPL-3.0.
+> Тут інша логіка (кожен стіл -- своя справжня планета, Super+Tab -- Сонячна система) і стиль (обсерваторія
+> замість зірок і малюнка від руки). Текстури планет і шейдери теми "Глибокий космос" додаються під час
+> збірки з [ryudzyn/nebula-config](https://github.com/ryudzyn/nebula-config), без них фон не запуститься.
+
 # ETEA Shell
 
 **Exit The Earth Atmosphere.** A desktop shell for [Hyprland](https://hyprland.org), built on

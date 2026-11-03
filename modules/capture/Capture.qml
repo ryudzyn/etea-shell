@@ -284,7 +284,7 @@ Scope {
                     visible: !modelData.hidden
                     width: label.implicitWidth + 30
                     height: 34
-                    radius: 17
+                    radius: 0
                     color: Qt.alpha(Theme.windowLit, modelData.on ? 0.3 : 0.1)
                     border.width: 1
                     border.color: Qt.alpha(Theme.windowLit, modelData.on ? 0.7 : 0.2)

@@ -54,7 +54,7 @@ ColumnLayout {
     Rectangle {
         Layout.fillWidth: true
         Layout.preferredHeight: 38
-        radius: 11
+        radius: 0
         color: Qt.alpha(Menus.tint, 0.12)
         border.width: 1
         border.color: Qt.alpha(Menus.tint, field.activeFocus ? 0.7 : 0.3)

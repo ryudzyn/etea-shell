@@ -55,7 +55,7 @@ Item {
 
                 Rectangle {
                     anchors.fill: parent
-                    radius: 10
+                    radius: 0
                     color: Theme.windowLit
                     opacity: pointer.containsMouse ? 0.08 : 0
                 }

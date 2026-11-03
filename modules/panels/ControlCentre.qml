@@ -74,7 +74,7 @@ ColumnLayout {
 
                 Rectangle {
                     anchors.fill: parent
-                    radius: 21
+                    radius: 0
                     color: Qt.alpha(Theme.windowLit, pointer.containsMouse ? 0.18 : 0.08)
                 }
 
@@ -110,7 +110,7 @@ ColumnLayout {
             label: "Wi-Fi"
             detail: root.network?.name ?? (Networking.wifiEnabled ? Lang.t("Recherche") : Lang.t("Coupé"))
             on: Networking.wifiEnabled
-            tint: "#8fc7e8"
+            tint: Theme.windowLit
             onToggled: Networking.wifiEnabled = !Networking.wifiEnabled
         }
 
@@ -120,7 +120,7 @@ ColumnLayout {
             detail: root.paired?.name ?? (root.adapter?.enabled ? Lang.t("Allumé") : Lang.t("Coupé"))
             on: root.adapter?.enabled ?? false
             available: root.adapter !== null
-            tint: "#b9a2f0"
+            tint: Theme.windowLit
             onToggled: root.adapter.enabled = !root.adapter.enabled
         }
 
@@ -129,7 +129,7 @@ ColumnLayout {
             label: Lang.t("Silence")
             detail: Notifs.quiet ? Lang.t("Activé") : ""
             on: Notifs.quiet
-            tint: "#e98fb0"
+            tint: Theme.windowLit
             onToggled: Notifs.quiet = !Notifs.quiet
         }
 
@@ -139,7 +139,7 @@ ColumnLayout {
             detail: NightLight.on ? `${NightLight.temperature} K` : ""
             on: NightLight.on
             available: NightLight.available
-            tint: "#ffc98a"
+            tint: Theme.windowLit
             onToggled: NightLight.toggle()
         }
 
@@ -149,7 +149,7 @@ ColumnLayout {
             detail: root.source?.audio?.muted ? Lang.t("Coupé") : Lang.t("Ouvert")
             on: !(root.source?.audio?.muted ?? true)
             available: root.source?.audio !== undefined
-            tint: "#f59a7a"
+            tint: Theme.windowLit
             onToggled: root.source.audio.muted = !root.source.audio.muted
         }
 
@@ -160,7 +160,7 @@ ColumnLayout {
             label: Lang.t("Énergie")
             detail: root.profileNames[current]
             on: PowerProfiles.profile !== PowerProfile.Balanced
-            tint: "#8fd6b4"
+            tint: Theme.windowLit
             onToggled: {
                 const next = root.profiles[(current + 1) % root.profiles.length];
                 PowerProfiles.profile = next === PowerProfile.Performance && !PowerProfiles.hasPerformanceProfile ? PowerProfile.PowerSaver : next;
@@ -172,7 +172,7 @@ ColumnLayout {
             label: Lang.t("Éveillé")
             detail: Wake.on ? Lang.t("Pas de veille") : ""
             on: Wake.on
-            tint: "#d9b08c"
+            tint: Theme.windowLit
             onToggled: Wake.on = !Wake.on
         }
 
@@ -180,7 +180,7 @@ ColumnLayout {
         QuickTile {
             icon: "capture"
             label: Lang.t("Capture")
-            tint: "#8fc7e8"
+            tint: Theme.windowLit
             onToggled: {
                 Menus.closePanel("right");
                 Menus.captureOpen = true;
@@ -190,7 +190,7 @@ ColumnLayout {
         QuickTile {
             icon: "picker"
             label: Lang.t("Pipette")
-            tint: "#e98fb0"
+            tint: Theme.windowLit
             onToggled: {
                 Menus.closePanel("right");
                 Picker.pick();
@@ -202,7 +202,7 @@ ColumnLayout {
         icon: root.sink?.audio?.muted ? "speaker-x" : "speaker-high"
         value: root.sink?.audio?.volume ?? 0
         maximum: 1
-        tint: "#e98fb0"
+        tint: Theme.windowLit
         onMoved: value => root.sink.audio.volume = value
         onIconPressed: root.sink.audio.muted = !root.sink.audio.muted
     }
@@ -210,7 +210,7 @@ ColumnLayout {
     SliderRow {
         icon: "brightness"
         value: Brightness.value
-        tint: "#ffd08a"
+        tint: Theme.windowLit
         onMoved: value => Brightness.set(value)
     }
 
@@ -239,7 +239,7 @@ ColumnLayout {
                 visible: cover.status === Image.Ready
                 Layout.preferredWidth: 54
                 Layout.preferredHeight: 54
-                radius: 12
+                radius: 0
                 color: "transparent"
 
                 Image {

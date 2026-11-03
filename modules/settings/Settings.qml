@@ -41,7 +41,7 @@ Scope {
             anchors.fill: parent
             anchors.margins: -8
             seed: "settings"
-            radius: 1
+            radius: 0
             ink: 0
             rise: 0.05
             tint: Theme.windowLit

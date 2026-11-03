@@ -16,7 +16,7 @@ ColumnLayout {
         shown = new Date(shown.getFullYear(), shown.getMonth() + months, 1);
     }
 
-    readonly property color cardTint: "#b9a2f0"
+    readonly property color cardTint: Theme.windowLit
     readonly property real cardRise: 0.07
 
     spacing: 8

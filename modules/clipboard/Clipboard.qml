@@ -280,7 +280,7 @@ Scope {
 
                         Rectangle {
                             anchors.fill: parent
-                            radius: 11
+                            radius: 0
                             color: Theme.windowLit
                             opacity: row.active ? 0.16 : 0
                         }

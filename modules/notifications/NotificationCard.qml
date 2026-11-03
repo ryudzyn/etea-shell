@@ -157,7 +157,7 @@ Item {
                     anchors.centerIn: parent
                     width: 48
                     height: 48
-                    radius: 24
+                    radius: 0
                     color: Qt.alpha(colour.color, 0.14)
 
                     Image {

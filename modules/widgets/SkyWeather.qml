@@ -3,8 +3,7 @@ import qs.config
 import qs.modules.bar
 import qs.services
 
-// The weather written across the sky: how warm it is, large and melting like the time,
-// what the sky is doing, and the hours to come in a quiet line underneath.
+// Погода таблицею: зараз і найближчі години.
 Column {
     id: root
 
@@ -12,95 +11,58 @@ Column {
     property var options: ({})
     readonly property var now: Weather.look(Weather.code, Weather.day)
 
-    spacing: sky * 0.012
+    width: sky * 0.26
+    spacing: sky * 0.008
+
+    ObsHeader {
+        text: "ПОГОДА" + (Weather.place ? " · " + Weather.place.toUpperCase() : "")
+        sky: root.sky
+    }
 
     Row {
-        anchors.horizontalCenter: parent.horizontalCenter
-        spacing: root.sky * 0.024
+        spacing: root.sky * 0.016
 
         Text {
             anchors.verticalCenter: parent.verticalCenter
             text: Weather.known ? `${Math.round(Weather.temperature)}°` : "–"
             color: Theme.skyInk
             font.family: Theme.font
-            font.pixelSize: root.sky * 0.11
-            font.weight: Font.Medium
-            font.letterSpacing: -root.sky * 0.003
-            renderType: Text.CurveRendering
-
-            layer.enabled: true
-            layer.smooth: true
-            layer.textureSize: Qt.size(width * 2, height * 2) // drawn at double size so the curves come out smooth
-            layer.effect: Dissolve {
-                from: 0.34
-                to: 0.95
-            }
+            font.pixelSize: root.sky * 0.05
+            font.weight: Font.Light
         }
 
-        Column {
+        Text {
             anchors.verticalCenter: parent.verticalCenter
-            spacing: root.sky * 0.004
-
-            Icon {
-                name: root.now.icon
-                size: Math.round(root.sky * 0.036)
-                tint: Theme.skyInk
-            }
-
-            Text {
-                text: Weather.known ? root.now.label : Weather.failed || Lang.t("On regarde le ciel…")
-                color: Theme.skyInk
-                font.family: Theme.font
-                font.pixelSize: root.sky * 0.02
-                font.weight: Font.Medium
-            }
-
-            Text {
-                visible: Weather.place !== ""
-                text: Weather.place
-                color: Qt.alpha(Theme.skyInk, 0.7)
-                font.family: Theme.font
-                font.pixelSize: root.sky * 0.014
-            }
+            text: Weather.known ? root.now.label : Weather.failed || "…"
+            color: Qt.alpha(Theme.skyInk, 0.75)
+            font.family: Theme.font
+            font.pixelSize: root.sky * 0.0125
         }
     }
 
-    // The next hours, each one a column
     Row {
         visible: Weather.known
-        anchors.horizontalCenter: parent.horizontalCenter
-        spacing: root.sky * 0.03
+        width: parent.width
 
         Repeater {
             model: Weather.hours.slice(0, 5)
 
             Column {
                 required property var modelData
-
-                spacing: root.sky * 0.004
+                width: parent.width / 5
 
                 Text {
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    text: Config.time(modelData.time, { suffix: false })
-                    color: Qt.alpha(Theme.skyInk, 0.65)
+                    text: Config.time(parent.modelData.time, { suffix: false })
+                    color: Qt.alpha(Theme.skyInk, 0.62)
                     font.family: Theme.font
-                    font.pixelSize: root.sky * 0.012
-                }
-
-                Icon {
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    name: Weather.look(modelData.code, modelData.day).icon
-                    size: Math.round(root.sky * 0.02)
-                    tint: Theme.skyInk
+                    font.pixelSize: root.sky * 0.0105
                 }
 
                 Text {
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    text: `${Math.round(modelData.temperature)}°`
+                    text: Math.round(parent.modelData.temperature) + "°"
                     color: Theme.skyInk
                     font.family: Theme.font
-                    font.pixelSize: root.sky * 0.015
-                    font.weight: Font.Medium
+                    font.pixelSize: root.sky * 0.0145
                 }
             }
         }

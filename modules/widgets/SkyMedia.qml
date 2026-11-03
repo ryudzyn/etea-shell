@@ -6,87 +6,78 @@ import qs.modules.bar
 import qs.modules.bar.menus
 import qs.services
 
-// What's playing, written on the sky with everything you need to steer it. The cover
-// and the title melt away a little, the controls stay crisp so they're easy to hit.
-RowLayout {
+// Що грає: заголовок, обкладинка без ефектів, назва, поступ і кнопки.
+ColumnLayout {
     id: root
 
     property real sky: 1080
     readonly property var player: Music.player
 
-    spacing: sky * 0.02
-    width: sky * 0.45
+    spacing: sky * 0.008
+    width: sky * 0.26
 
-    ClippingRectangle {
-        visible: root.player !== null && cover.status === Image.Ready
-        Layout.preferredWidth: root.sky * 0.15
-        Layout.preferredHeight: root.sky * 0.15
-        Layout.alignment: Qt.AlignTop
-        radius: 18
-        color: "transparent"
-
-        layer.enabled: true
-        layer.effect: Dissolve {
-            from: 0.45
-            to: 1.05
-        }
-
-        Image {
-            id: cover
-
-            anchors.fill: parent
-            fillMode: Image.PreserveAspectCrop
-            sourceSize: Qt.size(root.sky * 0.3, root.sky * 0.3)
-            source: root.player?.trackArtUrl ?? ""
-        }
+    ObsHeader {
+        Layout.fillWidth: true
+        text: root.player ? "МУЗИКА" : "МУЗИКА · ТИША"
+        sky: root.sky
     }
 
-    ColumnLayout {
+    RowLayout {
+        visible: root.player !== null
         Layout.fillWidth: true
-        spacing: root.sky * 0.006
+        spacing: root.sky * 0.01
 
-        Text {
-            Layout.fillWidth: true
-            horizontalAlignment: Text.AlignRight
-            text: root.player ? root.player.trackArtist || Lang.t("En écoute") : Lang.t("En attente")
-            elide: Text.ElideRight
-            color: Theme.skyInk
-            font.family: Theme.font
-            font.pixelSize: root.sky * 0.016
-            font.weight: Font.Medium
-        }
+        ClippingRectangle {
+            visible: cover.status === Image.Ready
+            Layout.preferredWidth: root.sky * 0.05
+            Layout.preferredHeight: root.sky * 0.05
+            radius: 0
+            color: "transparent"
 
-        Text {
-            Layout.fillWidth: true
-            horizontalAlignment: Text.AlignRight
-            text: root.player?.trackTitle ?? Lang.t("Silence radio.")
-            elide: Text.ElideRight
-            color: Theme.skyInk
-            font.family: Theme.font
-            font.pixelSize: root.sky * 0.044
-            font.weight: Font.Medium
-            renderType: Text.CurveRendering
+            Image {
+                id: cover
 
-            layer.enabled: true
-            layer.smooth: true
-            layer.textureSize: Qt.size(width * 2, height * 2) // drawn at double size so the curves come out smooth
-            layer.effect: Dissolve {
-                from: 0.4
-                to: 1.3
+                anchors.fill: parent
+                fillMode: Image.PreserveAspectCrop
+                sourceSize: Qt.size(root.sky * 0.1, root.sky * 0.1)
+                source: root.player?.trackArtUrl ?? ""
             }
         }
 
-        MediaProgress {
-            entering: false
-            visible: known
+        ColumnLayout {
             Layout.fillWidth: true
-            tint: Theme.skyInk
-        }
+            spacing: root.sky * 0.002
 
-        MediaControls {
-            visible: root.player !== null
-            Layout.alignment: Qt.AlignRight
-            tint: Theme.skyInk
+            Text {
+                Layout.fillWidth: true
+                text: root.player?.trackTitle ?? ""
+                elide: Text.ElideRight
+                color: Theme.skyInk
+                font.family: Theme.font
+                font.pixelSize: root.sky * 0.0145
+            }
+
+            Text {
+                Layout.fillWidth: true
+                text: root.player?.trackArtist ?? ""
+                elide: Text.ElideRight
+                color: Qt.alpha(Theme.skyInk, 0.62)
+                font.family: Theme.font
+                font.pixelSize: root.sky * 0.0125
+            }
         }
+    }
+
+    MediaProgress {
+        entering: false
+        visible: known
+        Layout.fillWidth: true
+        tint: Theme.skyInk
+    }
+
+    MediaControls {
+        visible: root.player !== null
+        Layout.alignment: Qt.AlignRight
+        tint: Theme.skyInk
     }
 }

@@ -195,13 +195,15 @@ Variants {
                 else if (Planet.inSystem && event.key === Qt.Key_Right)
                     Planet.chooseStep(1);
                 else if (Planet.inSystem && (event.key === Qt.Key_Return || event.key === Qt.Key_Enter))
-                    Planet.land(Planets.all[Planet.systemChoice].id);
+                    Planet.landPage(Planet.systemChoice + 1);
                 else if (!Planet.inSystem && event.key === Qt.Key_Left)
                     Planet.nudge(1);
                 else if (!Planet.inSystem && event.key === Qt.Key_Right)
                     Planet.nudge(-1);
                 else if (!Planet.inSystem && (event.key === Qt.Key_Return || event.key === Qt.Key_Enter))
                     Planet.leaveOrbit(Planet.topPage);
+                else if (Planet.inSystem && event.key >= Qt.Key_1 && event.key <= Qt.Key_8)
+                    Planet.landPage(event.key - Qt.Key_0);
                 else if (!Planet.inSystem && event.key >= Qt.Key_1 && event.key < Qt.Key_1 + Math.min(9, Config.pages))
                     Planet.leaveOrbit(Planet.orbitStart + event.key - Qt.Key_1);
                 else if (!Planet.inSystem && event.key === Qt.Key_0 && Config.pages === 10)

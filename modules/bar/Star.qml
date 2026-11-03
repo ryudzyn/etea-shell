@@ -37,7 +37,7 @@ Item {
         NumberAnimation {
             target: root
             property: "scale"
-            to: 1.5
+            to: 1
             duration: Theme.fast
             easing.type: Easing.OutCubic
         }
@@ -46,13 +46,14 @@ Item {
             property: "scale"
             to: 1
             duration: Theme.normal
-            easing.type: Easing.OutBack
+            easing.type: Easing.OutCubic
         }
     }
 
     // The halo, which is what really sells the shine
     Shape {
         id: halo
+        visible: false
 
         readonly property real radius: root.size * 2.4
 
@@ -91,10 +92,9 @@ Item {
         }
     }
 
-    // The star itself, four points curving in towards the centre
+    // Приціл: два тонкі відрізки, без сяйва
     Shape {
         anchors.fill: parent
-        preferredRendererType: Shape.CurveRenderer
         opacity: root.lit ? 1 : 0.55
 
         Behavior on opacity {
@@ -102,16 +102,15 @@ Item {
         }
 
         ShapePath {
-            strokeWidth: 0
-            strokeColor: "transparent"
-            fillColor: root.lit ? Theme.star : Theme.starAsleep
-            startX: root.size
-            startY: 0
+            strokeWidth: 1
+            strokeColor: root.lit ? Theme.star : Theme.starAsleep
+            fillColor: "transparent"
+            startX: 0
+            startY: root.size
 
-            PathQuad { x: root.size * 2; y: root.size; controlX: root.size * 1.15; controlY: root.size * 0.85 }
-            PathQuad { x: root.size; y: root.size * 2; controlX: root.size * 1.15; controlY: root.size * 1.15 }
-            PathQuad { x: 0; y: root.size; controlX: root.size * 0.85; controlY: root.size * 1.15 }
-            PathQuad { x: root.size; y: 0; controlX: root.size * 0.85; controlY: root.size * 0.85 }
+            PathLine { x: root.size * 2; y: root.size }
+            PathMove { x: root.size; y: 0 }
+            PathLine { x: root.size; y: root.size * 2 }
         }
     }
 }

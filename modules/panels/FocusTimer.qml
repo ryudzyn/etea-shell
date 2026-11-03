@@ -101,7 +101,7 @@ ColumnLayout {
 
                 width: 36
                 height: 36
-                radius: 18
+                radius: 0
                 color: Qt.alpha(root.tint, modelData.strong ? (press.containsMouse ? 0.34 : 0.24) : (press.containsMouse ? 0.16 : 0.07))
 
                 Icon {
@@ -135,7 +135,7 @@ ColumnLayout {
 
                 width: label.implicitWidth + 16
                 height: 22
-                radius: 11
+                radius: 0
                 color: Qt.alpha(root.tint, current ? 0.24 : 0.06)
                 border.width: 1
                 border.color: Qt.alpha(root.tint, current ? 0.6 : 0.16)

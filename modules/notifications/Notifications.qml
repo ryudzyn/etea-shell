@@ -38,6 +38,10 @@ Scope {
         function clearApp(app: string): void {
             Notifs.clear(app);
         }
+
+        function quiet(on: bool): void {
+            Notifs.quiet = on;
+        }
     }
 
     PanelWindow {

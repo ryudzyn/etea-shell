@@ -2,10 +2,11 @@ pragma Singleton
 
 import QtQuick
 import Quickshell
+import Quickshell.Hyprland
 
 // The whole look of ETEA lives here. Later on, every planet gets its own.
 Singleton {
-    readonly property var planet: Planets.find(Config.preview || Config.theme)
+    readonly property var planet: Planets.find(Config.preview || Config.deepSpace || Planets.forPage(Hyprland.focusedWorkspace?.id ?? 1))
     readonly property real pace: Config.pace === "ceremony" ? 1.7 : 1 // stretches the big movements
 
     // That sunset from the mockup, plus the grain that gives it some texture
@@ -40,10 +41,10 @@ Singleton {
     // Crisp white on the sky, with a warm glow around it
     readonly property color text: "#ffffff"
     readonly property color textSoft: "#e8dfd8"
-    readonly property color textGlow: planet.light
+    readonly property color textGlow: "transparent"
 
     // One font for the whole shell, icons on the side
-    readonly property string font: "Poppins"
+    readonly property string font: "JetBrainsMono Nerd Font"
     readonly property int textSize: Math.round(14 * barScale)
 
     // The everyday pace: quick enough to never keep you waiting
@@ -64,7 +65,7 @@ Singleton {
     readonly property real windowFocusSpeed: 6 // Hyprland's unit, 1 is a tenth of a second
 
     // Hyprland draws the rounded frame, so it never lags behind the window
-    readonly property int windowRadius: 22
+    readonly property int windowRadius: 0
     readonly property int windowGapOuter: Config.windowGapOuter // breathing room so the glow shows all the way around
     readonly property int windowGapInner: 5
     readonly property int traceWidth: Config.traceWidth // thickness of the frame
@@ -103,13 +104,13 @@ Singleton {
     readonly property int launcherSpacing: 170 // distance between two stars
 
     // Notifications: comets that land and open up
-    readonly property color cardDeep: "#0d0f1c"
+    readonly property color cardDeep: "#0b0e12"
 
     // Colours a card can take when its content has none of its own
-    readonly property var tones: ["#ffc98a", "#f59a7a", "#e98fb0", "#b9a2f0", "#8fc7e8", "#8fd6b4"]
+    readonly property var tones: [windowLit]
 
     // Motion that overshoots a touch, then settles
-    readonly property var expressive: [0.38, 1.21, 0.22, 1, 1, 1]
+    readonly property var expressive: [0.2, 0, 0, 1, 1, 1]
     readonly property int cardOpen: 340 * pace
     readonly property int notifWidth: 380
     readonly property int notifComet: 360

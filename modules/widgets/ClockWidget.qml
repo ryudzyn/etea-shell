@@ -141,7 +141,7 @@ Item {
             anchors.centerIn: parent
             width: 16
             height: 16
-            radius: 8
+            radius: 0
             color: root.skyTone
         }
 

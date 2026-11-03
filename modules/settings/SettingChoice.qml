@@ -29,7 +29,7 @@ SettingRow {
 
                 Rectangle {
                     anchors.fill: parent
-                    radius: 11
+                    radius: 0
                     color: Theme.windowLit
                     opacity: option.active ? 0.2 : pointer.containsMouse ? 0.09 : 0
 

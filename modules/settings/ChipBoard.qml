@@ -89,7 +89,7 @@ Item {
                 Layout.alignment: Qt.AlignTop
                 Layout.columnSpan: board.spanLast && index === board.zones.length - 1 ? board.columns : 1
                 Layout.preferredHeight: Math.max(76, flow.implicitHeight + 46)
-                radius: 16
+                radius: 0
                 color: Qt.alpha(Theme.windowLit, board.landingZone === zoneId ? 0.16 : 0.05)
                 border.width: 1
                 border.color: Qt.alpha(Theme.windowLit, board.landingZone === zoneId ? 0.6 : 0.14)
@@ -155,7 +155,7 @@ Item {
 
         Rectangle {
             anchors.fill: parent
-            radius: 12
+            radius: 0
             color: Qt.alpha(Theme.windowLit, chip.held ? 0.32 : pointer.containsMouse ? 0.22 : 0.13)
             border.width: chip.held ? 1 : 0
             border.color: Qt.alpha(Theme.windowLit, 0.7)

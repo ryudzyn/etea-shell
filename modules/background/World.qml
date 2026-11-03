@@ -1,5 +1,6 @@
 import QtQuick
 import Quickshell
+import Quickshell.Hyprland
 import qs.config
 import qs.modules.widgets
 import qs.services
@@ -39,6 +40,201 @@ Item {
         fragmentShader: Qt.resolvedUrl("../../shaders/sky.frag.qsb")
     }
 
+    // Планета цього столу, що висить у космосі. Гори лишились лише для орбіти.
+    // Усі текстури завантажені наперед, тож переліт не смикається на декодуванні.
+    Repeater {
+        id: surfaces
+        model: Planets.solar
+        Image {
+            required property var modelData
+            visible: false
+            mipmap: true
+            source: "file://" + Quickshell.shellPath("assets/planets/" + Planets.find(modelData).texture)
+        }
+    }
+    Image {
+        id: ringImage
+        visible: false
+        source: "file://" + Quickshell.shellPath("assets/planets/2k_saturn_ring_alpha.png")
+    }
+
+    Image {
+        id: cloudImage
+        visible: false
+        mipmap: true
+        source: "file://" + Quickshell.shellPath("assets/planets/2k_earth_clouds.jpg")
+    }
+
+    readonly property int page: Hyprland.focusedWorkspace?.id ?? 1
+    property int leaving: page
+    property int arriving: page
+    property real direction: 1
+    property real flight: 1 // 0 щойно вилетіли, 1 прибули
+    readonly property real farOpacity: 1 - Math.min(1, space * 3)
+
+    onPageChanged: {
+        if (page === arriving)
+            return;
+        leaving = arriving;
+        arriving = page;
+        direction = page > leaving ? 1 : -1;
+        flightAnim.restart();
+    }
+
+    NumberAnimation {
+        id: flightAnim
+        target: root
+        property: "flight"
+        from: 0
+        to: 1
+        duration: root.interactive ? 800 * Theme.pace : 0
+        easing.type: Easing.InOutCubic
+    }
+
+    component PlanetLayer: ShaderEffect {
+        required property int forPage
+        property real centreX: root.width * 0.55
+        property real centreY: root.height * 0.52
+        property real scale_: 1
+        readonly property var spec: Planets.find(Planets.forPage(forPage))
+
+        anchors.fill: parent
+        opacity: root.farOpacity
+        property vector2d resolution: Qt.vector2d(width, height)
+        property vector2d centre: Qt.vector2d(centreX, centreY)
+        property real radius: root.height * (spec.size ?? 0.26) * scale_
+        property real spin: root.spin
+        property real tilt: spec.tilt ?? 0
+        property real hasRing: spec.ring ? 1 : 0
+        property real hasClouds: spec.clouds ? 1 : 0
+        property var cloudMap: cloudImage
+        property real mode: 1
+        property real drift: 0
+        property color rim: spec.light
+        property var surface: surfaces.itemAt(Planets.solar.indexOf(spec.id))
+        property var ringMap: ringImage
+
+        fragmentShader: Qt.resolvedUrl("../../shaders/planet.frag.qsb")
+    }
+
+    // Тема "Глибокий космос": шейдер замість планети, 30 кадрів на секунду, за вікнами
+    // час стоїть, тож GPU відпочиває
+    readonly property string deep: Config.deepSpace
+    ShaderEffect {
+        anchors.fill: parent
+        visible: root.deep !== "" && root.farOpacity > 0
+        opacity: root.farOpacity
+
+        property real time: Planet.deepTime
+        property real camOffset: Config.deepAngle
+        property vector2d resolution: Qt.vector2d(width, height)
+
+        Behavior on camOffset {
+            NumberAnimation { duration: 1400; easing.type: Easing.InOutCubic }
+        }
+
+        fragmentShader: root.deep ? Qt.resolvedUrl("../../shaders/deep-" + root.deep + ".frag.qsb") : ""
+    }
+    // Зорі шейдерів яскраві: за колонками віджетів трохи затемнюємо, щоб текст читався
+    Repeater {
+        model: root.deep !== "" ? [{ left: true }, { left: false }] : []
+        Rectangle {
+            required property var modelData
+            x: modelData.left ? 0 : root.width - width
+            width: root.width * 0.24
+            height: root.height
+            opacity: root.farOpacity
+            gradient: Gradient {
+                orientation: Gradient.Horizontal
+                GradientStop { position: 0; color: Qt.rgba(0, 0, 0, modelData.left ? 0.78 : 0) }
+                GradientStop { position: modelData.left ? 0.72 : 0.28; color: Qt.rgba(0, 0, 0, 0.66) }
+                GradientStop { position: 1; color: Qt.rgba(0, 0, 0, modelData.left ? 0 : 0.78) }
+            }
+        }
+    }
+
+    Timer {
+        interval: 33
+        repeat: true
+        running: root.interactive && root.deep !== "" && Planet.pageEmpty && root.visible
+        onTriggered: Planet.deepTime += 0.033
+    }
+
+    // Зорі
+    ShaderEffect {
+        anchors.fill: parent
+        opacity: root.farOpacity
+        visible: opacity > 0 && root.deep === ""
+        property vector2d resolution: Qt.vector2d(width, height)
+        property vector2d centre: Qt.vector2d(0, 0)
+        property real radius: 0
+        property real spin: 0
+        property real tilt: 0
+        property real hasRing: 0
+        property real hasClouds: 0
+        property var cloudMap: ringImage
+        property real mode: 0
+        property real drift: root.arriving * 240 + root.direction * -240 * (1 - root.flight)
+        property color rim: "#000000"
+        property var surface: ringImage
+        property var ringMap: ringImage
+
+        fragmentShader: Qt.resolvedUrl("../../shaders/planet.frag.qsb")
+    }
+
+    // Планета, яку лишаємо: камера пролітає повз, вона росте і йде за край екрана
+    PlanetLayer {
+        forPage: root.leaving
+        visible: root.flight < 1 && root.farOpacity > 0 && root.deep === ""
+        centreX: root.width * 0.55 - root.direction * root.width * 1.35 * root.flight
+        centreY: root.height * 0.52 + root.height * 0.1 * root.flight
+        scale_: 1 + 1.8 * root.flight
+    }
+
+    // Планета, до якої летимо: перспектива, спершу цятка вдалині, потім наближається
+    PlanetLayer {
+        forPage: root.arriving
+        visible: root.farOpacity > 0 && root.deep === ""
+        centreX: root.width * 0.55 + root.direction * root.width * 0.1 * (1 - root.flight)
+        scale_: 1 / (1 + 30 * (1 - root.flight) * (1 - root.flight))
+    }
+
+    // Повний оберт за 10 хвилин, 15 кадрів на секунду і лише коли стіл порожній: інакше GPU відпочиває
+    property real spin: 0
+    Timer {
+        interval: 66
+        repeat: true
+        running: root.interactive && Planet.pageEmpty && root.visible
+        onTriggered: root.spin = (root.spin + 0.00069) % (Math.PI * 2)
+    }
+
+    // Спектр музики: деформовані кільця навколо планети, у її ж нахилі
+    ShaderEffect {
+        readonly property var spec: Planets.find(Planets.forPage(root.arriving))
+        readonly property real planetRadius: root.height * (spec.size ?? 0.26)
+
+        anchors.fill: parent
+        visible: root.interactive && Beat.dancing && root.farOpacity > 0 && root.flight > 0.85 && root.deep === ""
+        opacity: (root.flight - 0.85) / 0.15 * root.farOpacity
+
+        property vector2d resolution: Qt.vector2d(width, height)
+        property vector2d centre: Qt.vector2d(root.width * 0.55, root.height * 0.52)
+        property real radius: planetRadius
+        property real tilt: spec.tilt ?? 0
+        property real inner: spec.ring ? 2.42 : 1.32
+        property real amount: 0.42
+        property color tint: spec.light
+        property vector4d l0: root.bands(0)
+        property vector4d l1: root.bands(4)
+        property vector4d l2: root.bands(8)
+        property vector4d l3: root.bands(12)
+        property vector4d l4: root.bands(16)
+        property vector4d l5: root.bands(20)
+        property vector4d l6: root.bands(24)
+
+        fragmentShader: Qt.resolvedUrl("../../shaders/spectrum.frag.qsb")
+    }
+
     // Everyone's own images, placed by proportion so they fit on any screen
     Repeater {
         model: Config.decorations
@@ -69,7 +265,8 @@ Item {
     ShaderEffect {
         anchors.fill: parent
 
-        opacity: root.groundOpacity
+        opacity: root.groundOpacity * Math.min(1, root.space * 3)
+        visible: opacity > 0
 
         // planetAngle is what will spin the planet between pages
         property color layer0: Theme.terrainLayers[0]

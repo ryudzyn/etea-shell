@@ -24,7 +24,7 @@ ColumnLayout {
     }
 
     // The horizon climbs with the volume
-    readonly property color cardTint: "#e98fb0"
+    readonly property color cardTint: Theme.windowLit
     readonly property real cardRise: 0.05 + Math.min(1, (sink?.audio.volume ?? 0)) * 0.3
 
     // Device lists stay folded behind the current one, or the menu runs off the screen

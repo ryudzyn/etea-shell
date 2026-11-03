@@ -110,7 +110,7 @@ Scope {
             HandCard {
                 anchors.fill: parent
                 seed: root.kind
-                tint: root.kind === "volume" ? "#e98fb0" : root.kind === "microphone" ? "#f59a7a" : root.kind === "keyboard" ? "#a6c8e8" : "#ffd08a"
+                tint: Theme.windowLit
                 rise: 0.05 + root.level * 0.22
                 alive: panel.visible
             }

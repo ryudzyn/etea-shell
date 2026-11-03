@@ -18,7 +18,7 @@ Item {
         anchors.verticalCenter: parent.verticalCenter
         width: parent.width
         height: 2
-        radius: 1
+        radius: 0
         color: Qt.alpha(Menus.tint, root.on ? 0.8 : 0.22)
     }
 

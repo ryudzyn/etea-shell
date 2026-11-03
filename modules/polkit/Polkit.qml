@@ -159,7 +159,7 @@ Scope {
                     Layout.fillWidth: true
                     Layout.topMargin: 6
                     implicitHeight: 42
-                    radius: 14
+                    radius: 0
                     color: Qt.alpha(Theme.windowLit, field.activeFocus ? 0.14 : 0.08)
 
                     TextInput {
@@ -233,7 +233,7 @@ Scope {
 
         implicitWidth: caption.implicitWidth + 32
         implicitHeight: 36
-        radius: 13
+        radius: 0
         color: Qt.alpha(Theme.windowLit, strong ? (hover.containsMouse ? 0.34 : 0.24) : (hover.containsMouse ? 0.14 : 0.06))
 
         Text {

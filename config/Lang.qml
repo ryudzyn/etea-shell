@@ -10,10 +10,10 @@ import Quickshell.Io
 Singleton {
     id: root
 
-    readonly property var languages: [{ id: "fr", label: "Français" }, { id: "en", label: "English" }]
+    readonly property var languages: [{ id: "uk", label: "Українська" }, { id: "fr", label: "Français" }, { id: "en", label: "English" }]
     readonly property string system: Qt.locale().name.split("_")[0]
     readonly property string code: Config.language !== "auto" ? Config.language : languages.some(language => language.id === system) ? system : "en"
-    readonly property string locale: ({ fr: "fr_FR", en: "en_US" })[code] ?? code
+    readonly property string locale: ({ uk: "uk_UA", fr: "fr_FR", en: "en_US" })[code] ?? code
     property var words: ({})
 
     // {0}, {1}… stand for the values passed after the sentence

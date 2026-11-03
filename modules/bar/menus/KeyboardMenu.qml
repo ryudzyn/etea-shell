@@ -7,7 +7,7 @@ import qs.services
 ColumnLayout {
     id: root
 
-    readonly property color cardTint: "#a6c8e8"
+    readonly property color cardTint: Theme.windowLit
     readonly property real cardRise: 0.06
 
     spacing: 4

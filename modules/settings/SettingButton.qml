@@ -21,7 +21,7 @@ Item {
 
     Rectangle {
         anchors.fill: parent
-        radius: 12
+        radius: 0
         color: Theme.windowLit
         opacity: root.quiet ? (pointer.containsMouse ? 0.12 : 0.04) : (pointer.containsMouse ? 0.34 : 0.22)
 

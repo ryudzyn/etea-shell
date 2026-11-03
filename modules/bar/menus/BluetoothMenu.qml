@@ -24,7 +24,7 @@ ColumnLayout {
             adapter.discovering = false;
     }
 
-    readonly property color cardTint: root.adapter?.enabled ? "#b9a2f0" : "#a9a4ad"
+    readonly property color cardTint: root.adapter?.enabled ? Theme.windowLit : "#a9a4ad"
     readonly property real cardRise: root.adapter?.enabled ? 0.12 : 0.05
 
     spacing: 6

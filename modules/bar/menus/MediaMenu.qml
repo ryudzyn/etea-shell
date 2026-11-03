@@ -39,7 +39,7 @@ ColumnLayout {
 
                 width: name.implicitWidth + 24
                 height: 28
-                radius: 14
+                radius: 0
                 color: Qt.alpha(Menus.tint, current ? 0.3 : 0.1)
                 border.width: 1
                 border.color: Qt.alpha(Menus.tint, current ? 0.7 : 0.2)

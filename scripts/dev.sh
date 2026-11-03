@@ -56,13 +56,10 @@ take_pages() {
         hl.bind("CTRL + SUPER + Left", hl.dsp.global("etea:pagePrevious"), { description = "Shell: Previous page" })
         -- The Super key alone opens the launcher. It fires on release, and only if
         -- no other key came in between, so Super + anything still works normally.
-        hl.unbind("SUPER + Space")
         hl.unbind("SUPER + SUPER_L")
         hl.unbind("SUPER + SUPER_R")
         hl.bind("SUPER + SUPER_L", hl.dsp.global("etea:launcher"), { release = true, description = "Shell: Launcher" })
         hl.bind("SUPER + SUPER_R", hl.dsp.global("etea:launcher"), { release = true })
-        hl.unbind("SUPER + L")
-        hl.bind("SUPER + L", hl.dsp.global("etea:lock"), { description = "Shell: Lock" })
         hl.unbind("SUPER + A")
         hl.bind("SUPER + A", hl.dsp.global("etea:panelLeft"), { description = "Shell: Logbook" })
         hl.unbind("SUPER + N")
@@ -71,8 +68,6 @@ take_pages() {
         hl.bind("SUPER + V", hl.dsp.global("etea:clipboard"), { description = "Shell: Clipboard history" })
         hl.unbind("SUPER + SHIFT + S")
         hl.bind("SUPER + SHIFT + S", hl.dsp.global("etea:capture"), { description = "Shell: Capture (Tab for video)" })
-        hl.unbind("SUPER + Escape")
-        hl.bind("SUPER + Escape", hl.dsp.global("etea:session"), { description = "Shell: Session menu" })
         hl.unbind("SUPER + Comma")
         hl.bind("SUPER + Comma", hl.dsp.global("etea:settings"), { description = "Shell: Settings" })
         hl.unbind("SUPER + Slash")
@@ -94,9 +89,10 @@ take_pages() {
     # sets up itself (modules/stage/Illumination.qml) since it depends on the settings.
     # Hyprland complains when removing a gesture that isn't there, which is fine here.
     for direction in up down; do
-        hyprctl eval "hl.gesture({ fingers = 4, direction = \"$direction\", action = \"unset\" })" >/dev/null 2>&1 || true
+        hyprctl eval "if ETEA_ORBIT_GESTURES then hl.gesture({ fingers = 4, direction = \"$direction\", action = \"unset\" }) end" >/dev/null 2>&1 || true
     done
     hyprctl eval '
+        ETEA_ORBIT_GESTURES = true
         hl.gesture({ fingers = 4, direction = "up", action = function()
             hl.dispatch(hl.dsp.global("etea:orbit"))
         end })

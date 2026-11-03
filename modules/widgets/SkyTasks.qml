@@ -13,14 +13,11 @@ Column {
     readonly property int most: 7
 
     spacing: sky * 0.008
-    width: sky * 0.28
+    width: sky * 0.26
 
-    Text {
-        text: Tasks.items.length ? `${Lang.t("Tâches")} · ${Tasks.items.filter(task => !task.done).length}` : Lang.t("Tâches")
-        color: Qt.alpha(Theme.skyInk, 0.8)
-        font.family: Theme.font
-        font.pixelSize: root.sky * 0.016
-        font.weight: Font.Medium
+    ObsHeader {
+        text: "ЗАВДАННЯ" + (Tasks.items.length ? " · " + Tasks.items.filter(task => !task.done).length : "")
+        sky: root.sky
     }
 
     Repeater {
@@ -33,21 +30,22 @@ Column {
             required property int index
 
             width: root.width
-            height: label.implicitHeight + root.sky * 0.008
+            height: label.implicitHeight + root.sky * 0.005
 
-            Star {
+            Rectangle {
                 x: 0
                 anchors.verticalCenter: parent.verticalCenter
-                size: root.sky * 0.0075
-                lit: task.modelData.done
-                animated: false
-                opacity: task.modelData.done ? 1 : 0.5
+                width: root.sky * 0.009
+                height: width
+                color: task.modelData.done ? Theme.skyInk : "transparent"
+                border.width: 1
+                border.color: Qt.alpha(Theme.skyInk, 0.6)
             }
 
             Text {
                 id: label
 
-                x: root.sky * 0.026
+                x: root.sky * 0.018
                 width: parent.width - x
                 anchors.verticalCenter: parent.verticalCenter
                 text: task.modelData.text
@@ -55,7 +53,7 @@ Column {
                 font.strikeout: task.modelData.done
                 color: task.modelData.done ? Qt.alpha(Theme.skyInk, 0.45) : Theme.skyInk
                 font.family: Theme.font
-                font.pixelSize: root.sky * 0.021
+                font.pixelSize: root.sky * 0.0135
             }
 
             MouseArea {
@@ -71,26 +69,14 @@ Column {
         text: `+ ${Tasks.items.length - root.most}`
         color: Qt.alpha(Theme.skyInk, 0.6)
         font.family: Theme.font
-        font.pixelSize: root.sky * 0.014
+        font.pixelSize: root.sky * 0.0125
     }
 
     Text {
         visible: Tasks.items.length === 0
-        width: root.width
-        text: Lang.t("Rien à faire. Le ciel est à toi.")
-        wrapMode: Text.WordWrap
-        color: Theme.skyInk
+        text: "порожньо · Super+A"
+        color: Qt.alpha(Theme.skyInk, 0.62)
         font.family: Theme.font
-        font.pixelSize: root.sky * 0.02
-    }
-
-    Text {
-        visible: Tasks.items.length === 0
-        width: root.width
-        text: Lang.t("Ajoute-en dans le panneau de gauche, Super + A.")
-        wrapMode: Text.WordWrap
-        color: Qt.alpha(Theme.skyInk, 0.6)
-        font.family: Theme.font
-        font.pixelSize: root.sky * 0.013
+        font.pixelSize: root.sky * 0.0125
     }
 }

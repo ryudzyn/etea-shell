@@ -1,51 +1,69 @@
 import QtQuick
 import Quickshell
 import qs.config
+import qs.modules.bar
+import qs.services
 
-// The time, enormous, standing in the sky and dissolving as it sinks towards the
-// mountains. It sits behind the terrain, so the hills really do pass in front of it.
-Item {
+// Час як на приладі: місцевий великими цифрами, під ним UTC, зоряний час і юліанська дата.
+Column {
     id: root
 
     property real sky: 1080
-    property var options: ({}) // its entry in Config.widgets
+    property var options: ({})
 
-    implicitWidth: digits.implicitWidth
-    implicitHeight: digits.implicitHeight
+    width: sky * 0.26
+    spacing: sky * 0.008
 
     SystemClock {
         id: clock
+        precision: SystemClock.Seconds
+    }
 
-        precision: SystemClock.Minutes
+    function pad(n) {
+        return String(n).padStart(2, "0");
+    }
+
+    readonly property real julian: clock.date.getTime() / 86400000 + 2440587.5
+    // Місцевий середній зоряний час; довгота береться з погоди, без неї -- Гринвіч
+    readonly property string sidereal: {
+        const gmst = 18.697374558 + 24.06570982441908 * (julian - 2451545.0);
+        const local = ((gmst + (Weather.spot?.longitude ?? 0) / 15) % 24 + 24) % 24;
+        return pad(Math.floor(local)) + ":" + pad(Math.floor(local % 1 * 60));
+    }
+
+    ObsHeader {
+        text: "ЧАС"
+        sky: root.sky
     }
 
     Text {
-        visible: root.options?.date !== false
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.bottom: digits.top
-        anchors.bottomMargin: -root.sky * 0.085
-        text: Qt.locale(Config.locale).toString(clock.date, Lang.t("dddd d MMMM"))
-        color: Theme.skyInk
-        font.family: Theme.font
-        font.pixelSize: root.sky * 0.03
-        font.weight: Font.Medium
-    }
-
-    Text {
-        id: digits
-
         text: Config.time(clock.date, { suffix: false })
         color: Theme.skyInk
         font.family: Theme.font
-        font.pixelSize: root.sky * 0.54
-        font.weight: Font.Medium
-        font.letterSpacing: -root.sky * 0.01
-        // Qt's usual text gets ragged edges this big, this draws the real letter outlines
+        font.pixelSize: root.sky * 0.1
+        font.weight: Font.Light
+        font.letterSpacing: -root.sky * 0.003
         renderType: Text.CurveRendering
+    }
 
-        layer.enabled: true
-        layer.smooth: true
-        layer.textureSize: Qt.size(width * 2, height * 2) // drawn at double size so the curves come out smooth
-        layer.effect: Dissolve {}
+    ObsRow {
+        label: "UTC"
+        value: root.pad(clock.date.getUTCHours()) + ":" + root.pad(clock.date.getUTCMinutes()) + ":" + root.pad(clock.date.getUTCSeconds())
+        sky: root.sky
+    }
+    ObsRow {
+        label: "LST"
+        value: root.sidereal
+        sky: root.sky
+    }
+    ObsRow {
+        label: "JD"
+        value: root.julian.toFixed(3)
+        sky: root.sky
+    }
+    ObsRow {
+        label: "ДАТА"
+        value: Qt.formatDate(clock.date, "yyyy-MM-dd")
+        sky: root.sky
     }
 }

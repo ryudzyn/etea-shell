@@ -59,7 +59,7 @@ Scope {
         function onLockedChanged() {
             if (Menus.locked && Config.lockWith === "hyprlock") {
                 Menus.locked = false;
-                hyprlock.exec(["sh", "-c", "pidof hyprlock || hyprlock"]);
+                hyprlock.exec(["sh", "-c", "pidof hyprlock || nebula-lock"]);
             }
         }
     }

@@ -204,7 +204,7 @@ Scope {
                         Rectangle {
                             Layout.fillWidth: true
                             implicitHeight: 34
-                            radius: 11
+                            radius: 0
                             color: Qt.alpha(Theme.windowLit, city.activeFocus ? 0.14 : 0.08)
 
                             TextInput {
