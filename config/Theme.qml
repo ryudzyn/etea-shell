@@ -99,7 +99,7 @@ Singleton {
 
     // The launcher: a dimmed sky, a question and a constellation of apps
     readonly property color launcherShade: "#05060e"
-    readonly property real launcherDim: 0.88
+    readonly property real launcherDim: 0.97
     readonly property int launcherFade: 180
     readonly property int launcherSpacing: 170 // distance between two stars
 

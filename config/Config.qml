@@ -13,7 +13,7 @@ Singleton {
     // Past the last page of a group, the next group takes its place.
     readonly property int pages: Math.max(4, Math.min(10, pagesShown))
     readonly property string locale: Lang.locale
-    readonly property int launcherStars: 7 // how many apps the launcher shows at once
+    readonly property int launcherStars: 12 // how many apps the launcher shows at once
 
     // What the bar can hold, and where each piece can go
     readonly property var barModuleChoices: [
