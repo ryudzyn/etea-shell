@@ -78,7 +78,7 @@ Item {
             anchors.margins: root.edge
 
             sourceComponent: ScreencopyView {
-                captureSource: root.toplevel?.wayland ?? null
+                captureSource: Outputs.window(root.toplevel)
                 live: root.playing
                 onHasContentChanged: {
                     if (hasContent)
@@ -96,7 +96,7 @@ Item {
             anchors.margins: root.edge
 
             sourceComponent: ScreencopyView {
-                captureSource: root.toplevel?.wayland ?? null
+                captureSource: Outputs.window(root.toplevel)
                 live: true
                 opacity: hasContent ? root.glassOpacity : 0
                 onHasContentChanged: root.liveReady = hasContent

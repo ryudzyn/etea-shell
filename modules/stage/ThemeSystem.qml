@@ -482,7 +482,7 @@ Item {
                     ScreencopyView {
                         anchors.fill: parent
                         anchors.margins: 1
-                        captureSource: parent.modelData.wayland
+                        captureSource: Outputs.window(parent.modelData)
                         live: root.level > 0.9
                     }
 

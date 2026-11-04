@@ -25,7 +25,7 @@ Item {
         active: false
 
         sourceComponent: ScreencopyView {
-            captureSource: root.output
+            captureSource: Outputs.screen(root.output)
             live: false
             onHasContentChanged: {
                 if (hasContent)

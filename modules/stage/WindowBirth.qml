@@ -154,7 +154,7 @@ Item {
             id: recent
 
             anchors.fill: parent
-            captureSource: root.output
+            captureSource: Outputs.screen(root.output)
             live: false
         }
     }

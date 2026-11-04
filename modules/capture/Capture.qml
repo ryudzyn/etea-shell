@@ -144,7 +144,7 @@ Scope {
             active: root.open
 
             sourceComponent: ScreencopyView {
-                captureSource: panel.screen
+                captureSource: Outputs.screen(panel.screen)
                 live: false
             }
         }
