@@ -54,12 +54,9 @@ take_pages() {
         hl.unbind("CTRL + SUPER + Left")
         hl.bind("CTRL + SUPER + Right", hl.dsp.global("etea:pageNext"), { description = "Shell: Next page" })
         hl.bind("CTRL + SUPER + Left", hl.dsp.global("etea:pagePrevious"), { description = "Shell: Previous page" })
-        -- The Super key alone opens the launcher. It fires on release, and only if
-        -- no other key came in between, so Super + anything still works normally.
+        -- Super alone opens nothing here: the launcher is on Super + D in the Hyprland config
         hl.unbind("SUPER + SUPER_L")
         hl.unbind("SUPER + SUPER_R")
-        hl.bind("SUPER + SUPER_L", hl.dsp.global("etea:launcher"), { release = true, description = "Shell: Launcher" })
-        hl.bind("SUPER + SUPER_R", hl.dsp.global("etea:launcher"), { release = true })
         hl.unbind("SUPER + A")
         hl.bind("SUPER + A", hl.dsp.global("etea:panelLeft"), { description = "Shell: Logbook" })
         hl.unbind("SUPER + N")

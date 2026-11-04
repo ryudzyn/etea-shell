@@ -20,7 +20,6 @@ Scope {
 
     // ETEA's shortcuts, set up by scripts/dev.sh. mods and key match Hyprland's own names.
     readonly property var own: [
-        { mods: 64, key: "SUPER_L", keys: "Super", label: "Запуск програм" },
         { mods: 64, key: "Tab", keys: "Super + Tab", label: "Сонячна система: вибір столу" },
         { mods: 65, key: "Tab", keys: "Super + Shift + Tab", label: "Назад із Сонячної системи" },
         { mods: 64, key: "code:10", keys: "Super + 1 … 0", label: "Перелетіти на стіл" },
@@ -36,7 +35,7 @@ Scope {
         { mods: 64, key: "mouse:272", keys: "Super + перетягування", label: "Посунути віджет або вікно" }
     ]
     // Ті самі дії, що вже описані рядком вище: у шпаргалці другий раз не потрібні
-    readonly property var repeats: ["68 Left", "64 mouse_down", "64 SUPER_R"]
+    readonly property var repeats: ["68 Left", "64 mouse_down"]
 
     readonly property var shown: {
         const wanted = search.trim().toLowerCase();
