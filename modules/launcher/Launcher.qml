@@ -358,7 +358,7 @@ Scope {
                         visible: cluster.modelData.name !== ""
                         x: (cluster.modelData.x ?? 0) - width / 2
                         y: cluster.modelData.y ?? 0
-                        text: cluster.modelData.more > 0 ? `${cluster.modelData.name}   +${cluster.modelData.more}` : cluster.modelData.name
+                        text: (cluster.modelData.more > 0 ? `${cluster.modelData.name}   +${cluster.modelData.more}` : cluster.modelData.name).toUpperCase()
                         color: Qt.alpha(Theme.text, opener.containsMouse ? 0.9 : 0.55)
                         font.family: Theme.font
                         font.pixelSize: 13
@@ -434,7 +434,7 @@ Scope {
                                     sourceSize: Qt.size(96, 96)
                                     smooth: true
                                     source: node.modelData.icon ?? ""
-                                    opacity: node.chosen ? 1 : 0.85
+                                    opacity: node.chosen ? 1 : 0.8
                                 }
 
                                 // No icon to be found anywhere: the app's initial, in a disc of light
@@ -477,8 +477,6 @@ Scope {
                                 color: Theme.text
                                 font.family: Theme.font
                                 font.pixelSize: 18
-                                style: Text.Outline
-                                styleColor: Qt.alpha("#000000", 0.35)
                             }
 
                             // Point to choose, click to open, carry it to a page of the bar to open it there

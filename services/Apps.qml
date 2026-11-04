@@ -43,7 +43,7 @@ Singleton {
     }
 
     function appEntry(app) {
-        return { kind: "app", label: app.name, icon: Quickshell.iconPath(app.icon, "application-x-executable"), app: app };
+        return { kind: "app", label: app.name, icon: Quickshell.iconPath(app.icon, true), app: app };
     }
 
     // Nothing typed: the whole map, every app, your favourites at the heart of each constellation
@@ -138,7 +138,7 @@ Singleton {
             if (title.toLowerCase().includes(wanted) || kind.toLowerCase().includes(wanted)) {
                 // Without a class Hyprland can't say which app it is, and a guess goes badly wrong
                 const app = kind ? DesktopEntries.heuristicLookup(kind) : null;
-                found.push({ kind: "window", label: Lang.t("Aller à {0}", app?.name ?? title), icon: Quickshell.iconPath(app?.icon ?? "", "application-x-executable"), window: window });
+                found.push({ kind: "window", label: Lang.t("Aller à {0}", app?.name ?? title), icon: Quickshell.iconPath(app?.icon ?? "", true), window: window });
             }
         }
 
