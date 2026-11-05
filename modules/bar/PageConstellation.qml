@@ -157,8 +157,18 @@ Item {
 
         anchors.fill: parent
         hoverEnabled: true
+        acceptedButtons: Qt.LeftButton | Qt.RightButton
         cursorShape: Qt.PointingHandCursor
-        onClicked: Planet.request(root.pageId)
+        onClicked: event => {
+            if (event.button === Qt.LeftButton) {
+                Planet.request(root.pageId);
+            } else {
+                RightClick.page(root.pageId, () => Planet.request(root.pageId), () => {
+                    Planet.request(root.pageId);
+                    Apps.open = true;
+                }, mapToItem(null, event.x, event.y), QsWindow.window?.screen ?? null);
+            }
+        }
         onExited: root.hovered = null
 
         // The closest star wins, and you don't have to land exactly on it

@@ -161,7 +161,11 @@ Row {
                 anchors.margins: -4
                 acceptedButtons: Qt.LeftButton | Qt.RightButton
                 onPressed: mouse => {
-                    if (item.modelData === "settings") {
+                    const full = () => Menus.toggle({ volume: "sound", network: "network", bluetooth: "bluetooth" }[item.modelData], item.mapToItem(null, item.width / 2, 0).x);
+                    if (mouse.button === Qt.RightButton && ["volume", "network", "bluetooth"].includes(item.modelData)) {
+                        const spot = mapToItem(null, mouse.x, mouse.y), onScreen = QsWindow.window?.screen ?? null;
+                        ({ volume: RightClick.sound, network: RightClick.network, bluetooth: RightClick.bluetooth })[item.modelData](full, spot, onScreen);
+                    } else if (item.modelData === "settings") {
                         Menus.settingsOpen = !Menus.settingsOpen;
                     } else if (item.modelData === "session") {
                         Menus.sessionOpen = !Menus.sessionOpen;
@@ -172,8 +176,6 @@ Row {
                             Menus.togglePanel("right");
                     } else if (item.modelData === "keyboard" && mouse.button === Qt.LeftButton) {
                         Keyboard.next();
-                    } else if (item.modelData === "volume" && mouse.button === Qt.RightButton) {
-                        root.sink.audio.muted = !root.sink.audio.muted;
                     } else {
                         Menus.toggle({ volume: "sound", network: "network", bluetooth: "bluetooth", battery: "power", keyboard: "keyboard" }[item.modelData], item.mapToItem(null, item.width / 2, 0).x);
                     }

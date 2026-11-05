@@ -385,10 +385,18 @@ Item {
                 return;
             }
             if (mouse.button === Qt.RightButton) {
-                const i = planetAt(mouse.x, mouse.y);
-                if (i >= 0) {
-                    root.launchOnLanding = true;
-                    Planet.landPage(i + 1);
+                const spot = mapToItem(null, mouse.x, mouse.y), onScreen = QsWindow.window?.screen ?? null;
+                const w = windowAt(mouse.x, mouse.y), i = planetAt(mouse.x, mouse.y);
+                if (w) {
+                    RightClick.window(w, () => {
+                        root.focusOnLanding = w;
+                        Planet.landPage(w.workspace?.id ?? Planet.current);
+                    }, spot, onScreen);
+                } else if (i >= 0) {
+                    RightClick.page(i + 1, () => Planet.landPage(i + 1), () => {
+                        root.launchOnLanding = true;
+                        Planet.landPage(i + 1);
+                    }, spot, onScreen);
                 }
                 return;
             }
@@ -431,7 +439,7 @@ Item {
             height: 28 * root.unit
 
             Text {
-                text: "0" + (root.chosen + 1) + " · " + root.chosenSpec.name.toUpperCase()
+                text: "0" + (root.chosen + 1) + " · " + RightClick.pageName(root.chosen + 1).toUpperCase()
                 color: root.chosenSpec.light
                 font.family: Theme.font
                 font.pixelSize: Math.round(15 * root.unit)
@@ -512,7 +520,7 @@ Item {
         Text {
             width: parent.width
             wrapMode: Text.WordWrap
-            text: root.dragging ? "Кинь вікно на планету" : root.chosenSpec.line + " · Enter летіти · Esc назад\nМиша: тягни вікно · 2 кліки до нього · середня закрити · права запуск тут"
+            text: root.dragging ? "Кинь вікно на планету" : root.chosenSpec.line + " · Enter летіти · Esc назад\nМиша: тягни вікно · 2 кліки до нього · середня закрити · права меню"
             color: "#8b98a4"
             font.family: Theme.font
             font.pixelSize: Math.round(12 * root.unit)

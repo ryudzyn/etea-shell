@@ -45,7 +45,7 @@ Item {
         anchors.fill: parent
         enabled: root.interactive
         acceptedButtons: Qt.RightButton
-        onPressed: mouse => Desk.openMenu("add", Qt.point(mouse.x, mouse.y), QsWindow.window?.screen ?? null)
+        onPressed: mouse => RightClick.desk(Qt.point(mouse.x, mouse.y), QsWindow.window?.screen ?? null)
     }
 
     Repeater {

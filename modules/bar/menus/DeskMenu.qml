@@ -9,8 +9,7 @@ import qs.modules.bar
 import qs.modules.stage
 import qs.services
 
-// A right click on the desktop. On a widget: its size, its options, and a way to put it
-// away. On the empty sky: the widgets that aren't out yet.
+// A right click on a widget: its size, its options, and a way to put it away.
 Scope {
     // The picture for the photo frame
     Process {
@@ -30,8 +29,7 @@ Scope {
 
         property real reveal: 0
         property string shown: "" // stays a little longer than Desk.menuFor, so it can fold away
-        readonly property var widget: shown && shown !== "add" ? Desk.entry(shown) : null
-        readonly property var missing: Desk.catalog.filter(entry => !Desk.shown.includes(entry.type))
+        readonly property var widget: shown ? Desk.entry(shown) : null
 
         screen: Desk.menuScreen ?? Quickshell.screens[0]
         visible: shown !== ""
@@ -129,7 +127,7 @@ Scope {
 
                 MenuTitle {
                     Layout.bottomMargin: 4
-                    text: panel.widget ? Desk.label(panel.shown) : Lang.t("Ajouter au ciel")
+                    text: panel.widget ? Desk.label(panel.shown) : ""
                 }
 
                 // A widget's own card
@@ -254,31 +252,6 @@ Scope {
                             Desk.menuFor = "";
                         }
                     }
-                }
-
-                // The empty sky: what could go up there
-                Repeater {
-                    model: panel.shown === "add" ? panel.missing : []
-
-                    MenuRow {
-                        required property var modelData
-
-                        Layout.fillWidth: true
-                        label: modelData.label
-                        detail: "+"
-                        onPicked: {
-                            Desk.add(modelData.type);
-                            Desk.menuFor = "";
-                        }
-                    }
-                }
-
-                Text {
-                    visible: panel.shown === "add" && panel.missing.length === 0
-                    text: Lang.t("Tout est déjà dans le ciel.")
-                    color: Qt.alpha(Theme.text, 0.6)
-                    font.family: Theme.font
-                    font.pixelSize: 12
                 }
 
                 Text {

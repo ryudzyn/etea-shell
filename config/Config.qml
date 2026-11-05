@@ -60,6 +60,8 @@ Singleton {
     property alias pageTransition: saved.pageTransition // "planet", or "slide" for Hyprland's own
     property alias status: saved.status
     property alias widgets: saved.widgets
+    property alias pageNames: saved.pageNames // the names you gave pages, by number
+    property alias pinnedApps: saved.pinnedApps // first in the launcher, whatever the count says
     property alias widgetStyle: saved.widgetStyle // "sky" or "celestial"
     property alias decorations: saved.decorations
     property alias groundMusic: saved.groundMusic // "lines", "bars" or "off"
@@ -143,6 +145,9 @@ Singleton {
             property bool livePages: true
             property string pageTransition: "planet"
             property var status: ["notifications", "keyboard", "network", "bluetooth", "volume", "battery", "settings", "session"]
+
+            property var pageNames: ({})
+            property var pinnedApps: []
 
             // Widgets in the sky, for when a page is empty. x and y are shares of the screen.
             property var widgets: [

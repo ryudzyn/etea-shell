@@ -405,6 +405,7 @@ Scope {
                         height: hand
                         hoverEnabled: true
                         preventStealing: true
+                        acceptedButtons: Qt.LeftButton | Qt.RightButton
                         cursorShape: Qt.PointingHandCursor
                         property point pressedAt: Qt.point(0, 0)
 
@@ -421,7 +422,11 @@ Scope {
                         }
                         onReleased: mouse => {
                             const spot = mapToItem(null, mouse.x, mouse.y);
-                            if (!node.carried) {
+                            if (mouse.button === Qt.RightButton) {
+                                node.carried = false;
+                                if (node.modelData.app)
+                                    RightClick.app(node.modelData.app, spot, panel.screen);
+                            } else if (!node.carried) {
                                 Apps.run(node.modelData);
                             } else {
                                 node.carried = false;
@@ -612,8 +617,14 @@ Scope {
                         anchors.fill: parent
                         hoverEnabled: true
                         cursorShape: Qt.PointingHandCursor
+                        acceptedButtons: Qt.LeftButton | Qt.RightButton
                         onEntered: panel.chosen = row.index
-                        onClicked: Apps.run(row.modelData)
+                        onClicked: mouse => {
+                            if (mouse.button === Qt.LeftButton)
+                                Apps.run(row.modelData);
+                            else if (row.modelData.app)
+                                RightClick.app(row.modelData.app, mapToItem(null, mouse.x, mouse.y), panel.screen);
+                        }
                     }
                 }
             }

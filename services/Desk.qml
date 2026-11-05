@@ -74,7 +74,7 @@ Singleton {
     }
 
     // The card of options, opened with a right click
-    property string menuFor: "" // a widget, "add" for the empty sky, or nothing
+    property string menuFor: "" // a widget, or nothing
     property point menuAt: Qt.point(0, 0)
     property var menuScreen: null
 

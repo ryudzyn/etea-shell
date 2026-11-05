@@ -34,7 +34,7 @@ Singleton {
     }
 
     function byUse(a, b) {
-        return usesOf(b) - usesOf(a) || a.name.localeCompare(b.name);
+        return Config.pinnedApps.includes(b.id) - Config.pinnedApps.includes(a.id) || usesOf(b) - usesOf(a) || a.name.localeCompare(b.name);
     }
 
     function familyOf(app) {

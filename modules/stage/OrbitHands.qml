@@ -1,4 +1,5 @@
 import QtQuick
+import Quickshell
 import Quickshell.Hyprland
 import qs.config
 import qs.modules.bar
@@ -128,7 +129,22 @@ MouseArea {
                 Hyprland.dispatch(`hl.dsp.window.move({ workspace = ${Planet.orbitStart + page}, follow = false, window = "address:0x${carried.address}" })`);
                 Planet.refreshOrbit();
             }
-        } else if (mouse.button !== Qt.LeftButton) {
+        } else if (mouse.button === Qt.RightButton) {
+            const spot = mapToItem(null, mouse.x, mouse.y), onScreen = QsWindow.window?.screen ?? null;
+            const page = Planet.orbitStart + carriedFrom;
+            if (carried) {
+                const window = carried;
+                RightClick.window(window, () => {
+                    Planet.leaveOrbit(window.workspace?.id ?? page);
+                    Hyprland.dispatch(`hl.dsp.focus({ window = "address:0x${window.address}" })`);
+                }, spot, onScreen);
+            } else if (carriedFrom >= 0) {
+                RightClick.page(page, () => Planet.leaveOrbit(page), () => {
+                    Planet.leaveOrbit(page);
+                    Apps.open = true;
+                }, spot, onScreen);
+            }
+        } else if (mouse.button === Qt.MiddleButton) {
             if (carried) {
                 Hyprland.dispatch(`hl.dsp.window.close({ window = "address:0x${carried.address}" })`);
                 Planet.refreshOrbit();

@@ -43,6 +43,12 @@ Item {
     }
 
     Hover {
-        onPressed: Menus.togglePanel("left")
+        acceptedButtons: Qt.LeftButton | Qt.RightButton
+        onPressed: mouse => {
+            if (mouse.button === Qt.RightButton)
+                RightClick.clock(mapToItem(null, mouse.x, mouse.y), QsWindow.window?.screen ?? null);
+            else
+                Menus.togglePanel("left");
+        }
     }
 }
