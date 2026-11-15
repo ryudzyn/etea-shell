@@ -323,4 +323,87 @@ Item {
         layer.enabled: root.cached && music === 0
         fragmentShader: Qt.resolvedUrl("../../shaders/terrain.frag.qsb")
     }
+
+    // Погода за вікном (shaders/weather.frag): дощ, сніг, туман і гроза за кодом open-meteo з
+    // Weather.qml (місто -- з віджета погоди, без нього -- приблизно за IP). Анімація йде лише
+    // на порожньому столі. Перевірити без справжньої погоди: echo 65 > ~/.cache/etea/weather-test
+    // (61-65 дощ, 71-75 сніг, 45 туман, 95 гроза; видалити файл -- знову справжня).
+    readonly property int weatherCode: weatherTest.code >= 0 ? weatherTest.code : (Weather.known ? Weather.code : 0)
+    readonly property var fx: weatherFx(weatherCode)
+    function weatherFx(c) {
+        let rain = 0, snow = 0, fog = 0, storm = false;
+        if (c === 45 || c === 48)
+            fog = 0.7;
+        else if (c >= 51 && c <= 57)
+            rain = c >= 55 ? 0.35 : 0.2;
+        else if (c === 61 || c === 80)
+            rain = 0.45;
+        else if (c === 63 || c === 81 || c === 66)
+            rain = 0.7;
+        else if (c === 65 || c === 82 || c === 67)
+            rain = 1.0;
+        else if (c === 71 || c === 77)
+            snow = 0.4;
+        else if (c === 73 || c === 85)
+            snow = 0.7;
+        else if (c === 75 || c === 86)
+            snow = 1.0;
+        else if (c >= 95) {
+            rain = 1.0;
+            storm = true;
+        }
+        return { rain: rain, snow: snow, fog: fog, storm: storm };
+    }
+    readonly property bool weatherOn: interactive && deep === "" && fx.rain + fx.snow + fx.fog > 0
+    property real weatherTime: 0
+    property real flash: 0
+
+    Timer {
+        interval: 33
+        repeat: true
+        running: root.weatherOn && Planet.pageEmpty && root.visible
+        onTriggered: {
+            root.weatherTime += 0.033;
+            if (root.fx.storm && !flashAnim.running && Math.random() < 0.004)
+                flashAnim.restart();
+        }
+    }
+    SequentialAnimation {
+        id: flashAnim
+        NumberAnimation { target: root; property: "flash"; to: 1; duration: 60 }
+        NumberAnimation { target: root; property: "flash"; to: 0.15; duration: 140 }
+        NumberAnimation { target: root; property: "flash"; to: 0.8; duration: 70 }
+        NumberAnimation { target: root; property: "flash"; to: 0; duration: 700 }
+    }
+
+    FileView {
+        id: weatherTest
+        property int code: -1
+        path: Quickshell.env("HOME") + "/.cache/etea/weather-test"
+        watchChanges: true
+        onLoaded: {
+            const n = parseInt(text().trim());
+            code = n >= 0 ? n : -1;
+        }
+        onLoadFailed: code = -1
+        onFileChanged: reload()
+    }
+
+    ShaderEffect {
+        anchors.fill: parent
+        opacity: 1 - Math.min(1, root.space * 3)
+        visible: root.weatherOn && opacity > 0
+        property vector2d resolution: Qt.vector2d(width, height)
+        property real time: root.weatherTime
+        property real rain: root.fx.rain
+        property real snow: root.fx.snow
+        property real fog: root.fx.fog
+        property real flash: root.flash
+        property real horizon: root.horizon
+        fragmentShader: Qt.resolvedUrl("../../shaders/weather.frag.qsb")
+        Component.onCompleted: {
+            if (root.interactive)
+                Weather.join(); // служба питає погоду, лише коли хтось її хоче
+        }
+    }
 }
