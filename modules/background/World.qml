@@ -104,6 +104,7 @@ Item {
         property vector2d centre: Qt.vector2d(centreX, centreY)
         property real radius: root.height * (spec.size ?? 0.26) * scale_
         property real spin: Planets.spinAt(spec.id, root.now)
+        property real sunLat: Planets.sunLatAt(spec.id, root.now)
         property real tilt: spec.tilt ?? 0
         property real hasRing: spec.ring ? 1 : 0
         property real hasClouds: spec.clouds ? 1 : 0

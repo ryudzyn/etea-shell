@@ -106,6 +106,32 @@ Singleton {
         return s < 0 ? s + 2 * Math.PI : s;
     }
 
+    // Пора року: широта, над якою сонце в зеніті (shaders/planet.frag, sunLat). Земля -- схилення
+    // Сонця за датою, Марс -- Ls за алгоритмом Mars24, гіганти -- від дат рівнодень з їхнім роком,
+    // решта -- нахил осі мізерний. Без цього межа дня й ночі завжди мала той самий нахил.
+    function sunLatAt(id, ms) {
+        const deg = Math.PI / 180;
+        const d = ms / 86400000 + 2440587.5 - 2451545.0; // доби від J2000
+        if (id === "earth") {
+            const g = (357.528 + 0.9856003 * d) * deg;
+            const lambda = (280.460 + 0.9856474 * d) * deg + (1.915 * Math.sin(g) + 0.020 * Math.sin(2 * g)) * deg;
+            return Math.asin(Math.sin(23.44 * deg) * Math.sin(lambda));
+        }
+        if (id === "mars") {
+            const dt = d + 69.184 / 86400;
+            const m = (19.3871 + 0.52402073 * dt) * deg;
+            const ls = (270.3871 + 0.524038496 * dt) * deg + (10.691 * Math.sin(m) + 0.623 * Math.sin(2 * m) + 0.050 * Math.sin(3 * m)) * deg;
+            return Math.asin(0.42565 * Math.sin(ls)) + 0.25 * deg * Math.sin(ls);
+        }
+        // [нахил осі, рівнодення весни північної півкулі (Ls = 0), рік у земних роках]
+        const giants = { saturn: [26.73, Date.UTC(2009, 7, 11), 29.457], uranus: [97.77, Date.UTC(2007, 11, 7), 84.02], neptune: [28.32, Date.UTC(1881, 2, 1), 164.8] };
+        const g = giants[id];
+        if (!g)
+            return 0;
+        const ls = 2 * Math.PI * (ms - g[1]) / (g[2] * 365.25 * 86400000);
+        return Math.asin(Math.sin(g[0] * deg) * Math.sin(ls));
+    }
+
     function find(id) {
         return all.concat(deep).find(planet => planet.id === id) ?? all[0];
     }

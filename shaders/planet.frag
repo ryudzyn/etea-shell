@@ -15,6 +15,7 @@ layout(std140, binding = 0) uniform buf {
     float hasClouds;
     float mode;      // 0: зорі, 1: планета з прозорим тлом
     float drift;     // зсув зір під час перельоту, у пікселях
+    float sunLat;    // широта, над якою сонце в зеніті (пори року), радіани, північ +
     vec4 rim;
 };
 
@@ -23,7 +24,10 @@ layout(binding = 2) uniform sampler2D ringMap;
 layout(binding = 3) uniform sampler2D cloudMap;
 
 const float PI = 3.14159265;
-const vec3 SUN = normalize(vec3(-0.78, -0.22, 0.58));
+// Сонце зліва-спереду: кут по горизонталі як завжди (від нього рахує Planets.spinAt), а висоту
+// задає sunLat -- справжня пора року; рахуємо на початку main
+const float SUN_PHI = -0.931363; // atan2(-0.78, 0.58)
+vec3 SUN;
 const float RING_IN = 1.24;   // кільце C
 const float RING_OUT = 2.27;  // кільце A
 const float RING_S = 0.30;    // нахил площини кілець до глядача
@@ -53,6 +57,7 @@ vec4 over(vec4 under, vec3 rgb, float a) {
 }
 
 void main() {
+    SUN = vec3(cos(sunLat) * sin(SUN_PHI), -sin(sunLat), cos(sunLat) * cos(SUN_PHI));
     vec2 px = qt_TexCoord0 * resolution;
 
     if (mode < 0.5) {

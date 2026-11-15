@@ -236,6 +236,7 @@ Item {
                     property vector2d centre: Qt.vector2d(width / 2, height / 2)
                     property real radius: body.r
                     property real spin: root.seconds * (0.12 + 0.05 * body.index)
+                    property real sunLat: 0.2233 // як раніше: сонце трохи з півночі (пори року -- лише на шпалерах)
                     property real tilt: body.spec.tilt ?? 0
                     property real hasRing: body.spec.ring ? 1 : 0
                     property real hasClouds: body.spec.clouds ? 1 : 0

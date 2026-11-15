@@ -268,6 +268,7 @@ Scope {
                 property vector2d centre: Qt.vector2d(width / 2, height / 2)
                 property real radius: body
                 property real spin: panel.drift * 4
+                property real sunLat: 0.2233 // як раніше: сонце трохи з півночі (пори року -- лише на шпалерах)
                 property real tilt: Theme.planet.tilt ?? 0
                 property real hasRing: Theme.planet.ring ? 1 : 0
                 property real hasClouds: Theme.planet.clouds ? 1 : 0
