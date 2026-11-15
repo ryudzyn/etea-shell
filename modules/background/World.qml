@@ -1,6 +1,7 @@
 import QtQuick
 import Quickshell
 import Quickshell.Hyprland
+import Quickshell.Io
 import qs.config
 import qs.modules.widgets
 import qs.services
@@ -47,10 +48,31 @@ Item {
         model: Planets.solar
         Image {
             required property var modelData
+            readonly property bool live: modelData === "earth" && root.liveEarth
             visible: false
             mipmap: true
-            source: "file://" + Quickshell.shellPath("assets/planets/" + Planets.find(modelData).texture)
+            cache: !live
+            // «#версія» лише змушує перечитати той самий файл, коли він оновився
+            source: live ? "file://" + root.livePath + "#" + root.liveVersion
+                         : "file://" + Quickshell.shellPath("assets/planets/" + Planets.find(modelData).texture)
         }
+    }
+
+    // Жива Земля: супутникові хмари поверх Blue Marble (clouds.matteason.co.uk, CC0, дані EUMETSAT),
+    // свіжа картинка щогодини -- її кладе сюди окрема служба (nebula-config: crew/etea, etea-live-earth).
+    // Немає файлу чи мережі -- лишається звичайна Земля з хмарами, що пливуть.
+    readonly property string livePath: Quickshell.env("HOME") + "/.cache/etea/earth-live.jpg"
+    property bool liveEarth: false
+    property int liveVersion: 0
+    FileView {
+        path: root.livePath
+        watchChanges: true
+        onLoaded: {
+            root.liveEarth = true;
+            root.liveVersion++;
+        }
+        onLoadFailed: root.liveEarth = false
+        onFileChanged: reload()
     }
     Image {
         id: ringImage
@@ -107,7 +129,7 @@ Item {
         property real sunLat: Planets.sunLatAt(spec.id, root.now)
         property real tilt: spec.tilt ?? 0
         property real hasRing: spec.ring ? 1 : 0
-        property real hasClouds: spec.clouds ? 1 : 0
+        property real hasClouds: spec.clouds && !(spec.id === "earth" && root.liveEarth) ? 1 : 0 // у живій Землі хмари вже є
         property var cloudMap: cloudImage
         property real mode: 1
         property real drift: 0
