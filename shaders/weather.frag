@@ -47,7 +47,7 @@ float snowLayer(vec2 uv, float cell, float speed, float size) {
     vec2 id = floor(p);
     vec2 f = fract(p) - 0.5;
     float h = hash2(id);
-    if (h > 0.55)
+    if (h > 0.4) // приблизно кожна друга-третя клітинка
         return 0.0;
     vec2 c = vec2(hash2(id + 3.1) - 0.5, hash2(id + 5.7) - 0.5) * 0.6;
     c.x += 0.18 * sin(time * (0.8 + h) + h * 6.28);

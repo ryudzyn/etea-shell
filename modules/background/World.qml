@@ -279,6 +279,25 @@ Item {
         }
     }
 
+    // Погода -- за віджетами (текст читається) і за рельєфом (дощ іде з неба)
+    ShaderEffect {
+        anchors.fill: parent
+        opacity: 1 - Math.min(1, root.space * 3)
+        visible: root.weatherOn && opacity > 0
+        property vector2d resolution: Qt.vector2d(width, height)
+        property real time: root.weatherTime
+        property real rain: root.fx.rain
+        property real snow: root.fx.snow
+        property real fog: root.fx.fog
+        property real flash: root.flash
+        property real horizon: root.horizon
+        fragmentShader: Qt.resolvedUrl("../../shaders/weather.frag.qsb")
+        Component.onCompleted: {
+            if (root.interactive)
+                Weather.join(); // служба питає погоду, лише коли хтось її хоче
+        }
+    }
+
     Widgets {
         anchors.fill: parent
         interactive: root.interactive
@@ -387,23 +406,5 @@ Item {
         }
         onLoadFailed: code = -1
         onFileChanged: reload()
-    }
-
-    ShaderEffect {
-        anchors.fill: parent
-        opacity: 1 - Math.min(1, root.space * 3)
-        visible: root.weatherOn && opacity > 0
-        property vector2d resolution: Qt.vector2d(width, height)
-        property real time: root.weatherTime
-        property real rain: root.fx.rain
-        property real snow: root.fx.snow
-        property real fog: root.fx.fog
-        property real flash: root.flash
-        property real horizon: root.horizon
-        fragmentShader: Qt.resolvedUrl("../../shaders/weather.frag.qsb")
-        Component.onCompleted: {
-            if (root.interactive)
-                Weather.join(); // служба питає погоду, лише коли хтось її хоче
-        }
     }
 }
