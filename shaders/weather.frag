@@ -51,7 +51,7 @@ float snowLayer(vec2 uv, float cell, float speed, float size) {
         return 0.0;
     vec2 c = vec2(hash2(id + 3.1) - 0.5, hash2(id + 5.7) - 0.5) * 0.6;
     c.x += 0.18 * sin(time * (0.8 + h) + h * 6.28);
-    return smoothstep(size, size * 0.3, length(f - c));
+    return smoothstep(size, 0.0, length(f - c)); // розмитий край замість різкої цятки
 }
 
 void main() {
@@ -74,8 +74,9 @@ void main() {
         float s = snowLayer(uv, 46.0, 0.9, 0.16) * 0.9
                 + snowLayer(uv + 0.37, 30.0, 0.6, 0.14) * 0.6
                 + snowLayer(uv + 0.71, 20.0, 0.4, 0.12) * 0.4;
-        float a = clamp(s * (0.35 + 0.65 * snow), 0.0, 0.85);
-        col = col + vec4(vec3(0.95, 0.97, 1.0) * a, a) * (1.0 - col.a);
+        // м'якше й тьмяніше: яскраві білі цятки по всьому екрану різали очі (автор, 2026-11-15)
+        float a = clamp(s * (0.22 + 0.33 * snow), 0.0, 0.5);
+        col = col + vec4(vec3(0.86, 0.9, 0.96) * a, a) * (1.0 - col.a);
     }
 
     if (fog > 0.0) {
