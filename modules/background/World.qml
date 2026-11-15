@@ -103,7 +103,7 @@ Item {
         property vector2d resolution: Qt.vector2d(width, height)
         property vector2d centre: Qt.vector2d(centreX, centreY)
         property real radius: root.height * (spec.size ?? 0.26) * scale_
-        property real spin: root.spin
+        property real spin: Planets.spinAt(spec.id, root.now)
         property real tilt: spec.tilt ?? 0
         property real hasRing: spec.ring ? 1 : 0
         property real hasClouds: spec.clouds ? 1 : 0
@@ -199,13 +199,14 @@ Item {
         scale_: 1 / (1 + 30 * (1 - root.flight) * (1 - root.flight))
     }
 
-    // Повний оберт за 10 хвилин, 15 кадрів на секунду і лише коли стіл порожній: інакше GPU відпочиває
-    property real spin: 0
+    // Планети показують справжній день і ніч (Planets.spinAt): поворот рахується з годинника.
+    // Земля зсувається на 0.25° за хвилину, тож раз на 20 с досить -- GPU майже не працює
+    property real now: Date.now()
     Timer {
-        interval: 66
+        interval: 20000
         repeat: true
-        running: root.interactive && Planet.pageEmpty && root.visible
-        onTriggered: root.spin = (root.spin + 0.00069) % (Math.PI * 2)
+        running: root.visible
+        onTriggered: root.now = Date.now()
     }
 
     // Спектр музики: деформовані кільця навколо планети, у її ж нахилі

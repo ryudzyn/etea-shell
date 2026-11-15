@@ -76,6 +76,36 @@ Singleton {
         }
     ]
 
+    // Справжній день і ніч: поворот планети (spin у shaders/planet.frag) такий, щоб під сонцем
+    // шейдера була та довгота, де зараз полудень. Шейдер показує в точці з кутом φ = atan(n.x, n.z)
+    // довготу φ + spin, сонце стоїть під φ = atan2(SUN.x, SUN.z), тож spin = λ_полудня − φ_сонця.
+    // Земля -- за UTC, Марс -- за марсіанським середнім часом MTC (як Mars24 у NASA), обидва
+    // без «рівняння часу» (кілька градусів). Решта -- справжня тривалість сонячної доби від J2000,
+    // але меридіан умовний: газові гіганти не мають твердої поверхні, Меркурій і Венера ледь рухаються.
+    readonly property real sunPhi: Math.atan2(-0.78, 0.58) // має збігатися з SUN у shaders/planet.frag
+    readonly property var solarDayHours: ({ mercury: 175.94 * 24, venus: -116.75 * 24, jupiter: 9.925, saturn: 10.656, uranus: -17.24, neptune: 16.11 })
+
+    function spinAt(id, ms) {
+        const deg = Math.PI / 180;
+        let noon; // довгота (схід +), де сонце в зеніті
+        if (id === "earth") {
+            const utc = ((ms / 3600000) % 24 + 24) % 24;
+            noon = (12 - utc) * 15 * deg;
+        } else if (id === "mars") {
+            const jdTT = ms / 86400000 + 2440587.5 + 69.184 / 86400;
+            const msd = (jdTT - 2405522.0028779) / 1.0274912517; // марсіанська сонячна доба
+            const mtc = 24 * (msd - Math.floor(msd));
+            noon = (12 - mtc) * 15 * deg;
+        } else if (solarDayHours[id] !== undefined) {
+            const hours = (ms - Date.UTC(2000, 0, 1, 12)) / 3600000;
+            noon = -2 * Math.PI * hours / solarDayHours[id];
+        } else {
+            return 0;
+        }
+        const s = (noon - sunPhi) % (2 * Math.PI);
+        return s < 0 ? s + 2 * Math.PI : s;
+    }
+
     function find(id) {
         return all.concat(deep).find(planet => planet.id === id) ?? all[0];
     }
