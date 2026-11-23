@@ -13,6 +13,8 @@ import qs.config
 //   відповідає -- бульбашка зліва: почуте (дрібно) і відповідь;
 // потім сам відлітає. Керується лише ззовні:
 //   etea-ipc sich listening | think "<почуте>" | answer "<почуте>" "<відповідь>" | hide
+//   speaking "<почуте>" "<відповідь>" -- як answer, але сам не відлітає: клієнт скаже hide, коли
+//   договорить голос (за таймером довгий перелік ховався посеред озвучення, 2026-11-23)
 // Вікно не ловить мишу (порожня маска) і не займає місця.
 Scope {
     id: root
@@ -24,6 +26,7 @@ Scope {
 
     function arrive(what) {
         mode = what;
+        guard.interval = 60000;
         leave.stop();
         flight = 1;
     }
@@ -53,6 +56,14 @@ Scope {
             // читати встигнути: 4 с + трохи на кожен знак, не довше 16 с
             leave.interval = Math.min(16000, 4000 + 55 * (heard.length + reply.length));
             leave.restart();
+        }
+
+        function speaking(heard: string, reply: string): void {
+            root.heard = heard;
+            root.reply = reply;
+            root.arrive("answer");
+            root.guard.interval = 180000; // голос довшого за 3 хв не буде
+            root.guard.restart();
         }
 
         function hide(): void {
