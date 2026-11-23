@@ -207,21 +207,22 @@ Item {
         fragmentShader: Qt.resolvedUrl("../../shaders/planet.frag.qsb")
     }
 
-    // Планета, яку лишаємо: камера пролітає повз, вона росте і йде за край екрана
-    PlanetLayer {
-        forPage: root.leaving
-        visible: root.flight < 1 && root.farOpacity > 0 && root.deep === ""
-        centreX: root.width * 0.55 - root.direction * root.width * 1.35 * root.flight
-        centreY: root.height * 0.52 + root.height * 0.1 * root.flight
-        scale_: 1 + 1.8 * root.flight
-    }
-
     // Планета, до якої летимо: перспектива, спершу цятка вдалині, потім наближається
     PlanetLayer {
         forPage: root.arriving
         visible: root.farOpacity > 0 && root.deep === ""
         centreX: root.width * 0.55 + root.direction * root.width * 0.1 * (1 - root.flight)
         scale_: 1 / (1 + 30 * (1 - root.flight) * (1 - root.flight))
+    }
+
+    // Планета, яку лишаємо: камера пролітає повз, вона росте і йде за край екрана. Іде після
+    // тієї, до якої летимо: вона ближче, тож мусить бути зверху (інакше далека налазить на неї)
+    PlanetLayer {
+        forPage: root.leaving
+        visible: root.flight < 1 && root.farOpacity > 0 && root.deep === ""
+        centreX: root.width * 0.55 - root.direction * root.width * 1.35 * root.flight
+        centreY: root.height * 0.52 + root.height * 0.1 * root.flight
+        scale_: 1 + 1.8 * root.flight
     }
 
     // Планети показують справжній день і ніч (Planets.spinAt): поворот рахується з годинника.
