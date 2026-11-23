@@ -26,7 +26,7 @@ Singleton {
     }
 
     function pageName(page) {
-        return Config.pageNames[page] || Planets.find(Planets.solar[(page - 1) % Planets.solar.length]).name;
+        return Config.pageNames[page] || Planets.find(Planets.forPage(page)).name;
     }
 
     function pageList(chosen, skip) {

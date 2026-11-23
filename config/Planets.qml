@@ -8,8 +8,11 @@ import Quickshell
 Singleton {
     readonly property var all: builtIn.concat(Config.customPlanets)
 
-    // Кожен робочий стіл -- своя планета, за порядком від Сонця
+    // Планети за порядком від Сонця (у них є текстури й орбіти)
     readonly property var solar: ["mercury", "venus", "earth", "mars", "jupiter", "saturn", "uranus", "neptune"]
+    // Кожен робочий стіл -- своє тіло: 1 -- Сонце, 2-9 -- планети, 10 -- пояс астероїдів (Церера).
+    // Раніше після восьми планет список ішов по колу, і 9-й стіл знову був Меркурієм.
+    readonly property var pages: ["sun"].concat(solar, ["belt"])
 
     // Тема "Глибокий космос": шпалери-шейдери замість планет, спільні для всіх столів
     readonly property var deep: [
@@ -22,10 +25,12 @@ Singleton {
     ]
 
     function forPage(page) {
-        return solar[(Math.max(page, 1) - 1) % solar.length];
+        return pages[(Math.max(page, 1) - 1) % pages.length];
     }
 
     readonly property var builtIn: [
+        // kind (shaders/planet.frag): 1 -- зоря, що світить сама; 2 -- Церера серед уламків поясу
+        { id: "sun", kind: 1, facts: { radius: "696 340 км", day: "25.4 д", year: "230 млн р", tilt: "7.25°" }, size: 0.31, tilt: 0.13, name: "Сонце", line: "0 а.о.", skyTop: "#060403", skyMid: "#170d06", skyLow: "#33190a", terrain: ["#32190b", "#221008", "#150a05", "#0a0503"], light: "#f0b45a" },
         { id: "mercury", facts: { radius: "2 439.7 км", day: "58.6 д", year: "88.0 д", tilt: "0.03°" }, texture: "2k_mercury.jpg", size: 0.2, tilt: 0.0, name: "Меркурій", line: "0.39 а.о.", skyTop: "#040405", skyMid: "#0e0d0c", skyLow: "#23201d", terrain: ["#26231f", "#1a1815", "#100f0d", "#070606"], light: "#b8b0a6" },
         { id: "venus", facts: { radius: "6 051.8 км", day: "243 д (ретр.)", year: "224.7 д", tilt: "177.4°" }, texture: "2k_venus_atmosphere.jpg", size: 0.27, tilt: 0.05, name: "Венера", line: "0.72 а.о.", skyTop: "#050403", skyMid: "#14100a", skyLow: "#2e2414", terrain: ["#2b2214", "#1d170e", "#120e08", "#080604"], light: "#e0c388" },
         { id: "earth", facts: { radius: "6 371 км", day: "23 г 56 хв", year: "365.25 д", tilt: "23.4°" }, texture: "2k_earth_daymap.jpg", clouds: true, size: 0.29, tilt: -0.41, name: "Земля", line: "1.00 а.о.", skyTop: "#030406", skyMid: "#0a1119", skyLow: "#162636", terrain: ["#172635", "#101a25", "#0a1118", "#05080c"], light: "#7fb2d9" },
@@ -34,6 +39,7 @@ Singleton {
         { id: "saturn", facts: { radius: "58 232 км", day: "10 г 33 хв", year: "29.46 р", tilt: "26.7°" }, texture: "2k_saturn.jpg", size: 0.19, tilt: -0.3, ring: true, name: "Сатурн", line: "9.58 а.о.", skyTop: "#050404", skyMid: "#13110c", skyLow: "#2c2619", terrain: ["#2a2418", "#1c1810", "#120f0a", "#080705"], light: "#dcc898" },
         { id: "uranus", facts: { radius: "25 362 км", day: "17 г 14 хв", year: "84.0 р", tilt: "97.8°" }, texture: "2k_uranus.jpg", size: 0.28, tilt: 1.2, name: "Уран", line: "19.2 а.о.", skyTop: "#030505", skyMid: "#0a1415", skyLow: "#162b2e", terrain: ["#172b2e", "#0f1d1f", "#0a1314", "#050909"], light: "#9fd6dc" },
         { id: "neptune", facts: { radius: "24 622 км", day: "16 г 06 хв", year: "164.8 р", tilt: "28.3°" }, texture: "2k_neptune.jpg", size: 0.28, tilt: -0.49, name: "Нептун", line: "30.1 а.о.", skyTop: "#030406", skyMid: "#0a0f1c", skyLow: "#141f3a", terrain: ["#152038", "#0e1626", "#090e18", "#04070c"], light: "#6f92d6" },
+        { id: "belt", kind: 2, facts: { radius: "469.7 км (Церера)", day: "9 г 04 хв", year: "4.60 р", tilt: "4°" }, size: 0.15, tilt: 0.07, name: "Пояс астероїдів", line: "2.2–3.3 а.о.", skyTop: "#040404", skyMid: "#0f0e0d", skyLow: "#24211e", terrain: ["#25221f", "#191715", "#100e0d", "#070606"], light: "#c2b8aa" },
         {
             id: "aster",
             name: "Aster",
@@ -83,7 +89,7 @@ Singleton {
     // без «рівняння часу» (кілька градусів). Решта -- справжня тривалість сонячної доби від J2000,
     // але меридіан умовний: газові гіганти не мають твердої поверхні, Меркурій і Венера ледь рухаються.
     readonly property real sunPhi: Math.atan2(-0.78, 0.58) // має збігатися з SUN у shaders/planet.frag
-    readonly property var solarDayHours: ({ mercury: 175.94 * 24, venus: -116.75 * 24, jupiter: 9.925, saturn: 10.656, uranus: -17.24, neptune: 16.11 })
+    readonly property var solarDayHours: ({ sun: 25.38 * 24, belt: 9.074, mercury: 175.94 * 24, venus: -116.75 * 24, jupiter: 9.925, saturn: 10.656, uranus: -17.24, neptune: 16.11 })
 
     function spinAt(id, ms) {
         const deg = Math.PI / 180;

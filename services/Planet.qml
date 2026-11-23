@@ -53,14 +53,14 @@ Singleton {
     property real systemLevel: 0
     property real systemScroll: 0 // how far along the row of planets we are, between two of them while dragging
     readonly property int systemChoice: {
-        const count = Planets.solar.length;
+        const count = Planets.pages.length;
         return (Math.round(systemScroll) % count + count) % count;
     }
 
     // Whatever comes to the front gets tried on by the whole shell
     onSystemChoiceChanged: {
         if (inSystem)
-            Config.preview = Planets.solar[systemChoice];
+            Config.preview = Planets.pages[systemChoice];
     }
 
     // Turning the planet by hand, up in orbit
@@ -283,8 +283,8 @@ Singleton {
 
     function enterSystem() {
         systemSlide.stop();
-        systemScroll = Math.max(0, (current - 1) % Planets.solar.length);
-        Config.preview = Planets.solar[systemChoice];
+        systemScroll = Math.max(0, (current - 1) % Planets.pages.length);
+        Config.preview = Planets.pages[systemChoice];
         inSystem = true;
         systemShift.to = 1;
         systemShift.restart();

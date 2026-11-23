@@ -15,12 +15,14 @@ Item {
     readonly property real cx: 590 * unit
     readonly property real cy: height * 0.53
     readonly property int chosen: Planet.systemChoice
-    readonly property var chosenSpec: Planets.find(Planets.solar[chosen])
+    readonly property var chosenSpec: Planets.find(Planets.pages[chosen])
     readonly property var chosenWindows: windowsOf(chosen + 1)
 
     // Велика піввісь в а.о. і середня довгота: L0 + швидкість * днів від J2000, у градусах.
     // Цього досить, щоб розташування відповідало небу з точністю, потрібною для схеми.
+    // Рядок на кожен стіл з Planets.pages: Сонце в центрі (01), планети, Церера в поясі (10).
     readonly property var orbits: [
+        { au: 0, l0: 0, rate: 0, px: 17 },
         { au: 0.387, l0: 252.25, rate: 4.09233445, px: 5 },
         { au: 0.723, l0: 181.98, rate: 1.60213034, px: 8 },
         { au: 1.0, l0: 100.47, rate: 0.9856091, px: 9 },
@@ -28,8 +30,15 @@ Item {
         { au: 5.203, l0: 34.4, rate: 0.0830853, px: 22 },
         { au: 9.537, l0: 49.94, rate: 0.03344414, px: 17 },
         { au: 19.19, l0: 313.23, rate: 0.01172834, px: 12 },
-        { au: 30.07, l0: 304.88, rate: 0.00598103, px: 12 }
+        { au: 30.07, l0: 304.88, rate: 0.00598103, px: 12 },
+        { au: 2.767, l0: 159.6, rate: 0.2141, px: 4 }
     ]
+    readonly property real beltIn: 2.2 // а.о., межі головного поясу
+    readonly property real beltOut: 3.3
+
+    function num(page) {
+        return String(page).padStart(2, "0");
+    }
     readonly property real days: (Date.now() - Date.UTC(2000, 0, 1, 12)) / 86400000 + clock
     property real clock: 0 // симульовані дні від моменту відкриття, старт -- реальне небо
     property real seconds: 0
@@ -101,7 +110,11 @@ Item {
     }
 
     function rx(index) {
-        return (70 + Math.log10(orbits[index].au / 0.387) / Math.log10(30.07 / 0.387) * 450) * unit;
+        return rxAu(orbits[index].au);
+    }
+
+    function rxAu(au) {
+        return au > 0 ? (70 + Math.log10(au / 0.387) / Math.log10(30.07 / 0.387) * 450) * unit : 0;
     }
 
     function planetX(index) {
@@ -121,12 +134,13 @@ Item {
 
     Repeater {
         id: surfaces
-        model: Planets.solar
+        model: Planets.pages
         Image {
             required property var modelData
+            readonly property string texture: Planets.find(modelData).texture ?? ""
             visible: false
             mipmap: true
-            source: "file://" + Quickshell.shellPath("assets/planets/" + Planets.find(modelData).texture)
+            source: texture ? "file://" + Quickshell.shellPath("assets/planets/" + texture) : ""
         }
     }
 
@@ -171,12 +185,25 @@ Item {
             onPaint: {
                 const c = getContext("2d");
                 c.reset();
-                for (let i = 0; i < root.orbits.length; i++) {
+                // Пояс астероїдів: розсип цяток між Марсом і Юпітером, щоразу той самий
+                const inner = root.rxAu(root.beltIn), outer = root.rxAu(root.beltOut);
+                let seed = 7;
+                const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+                const last = root.orbits.length - 1;
+                c.fillStyle = last === root.dropTarget || last === root.chosen ? Qt.alpha(Planets.find("belt").light, 0.55) : "#2e353d";
+                for (let k = 0; k < 520; k++) {
+                    const a = rnd() * Math.PI * 2, rr = inner + (outer - inner) * Math.pow(rnd(), 0.8);
+                    c.fillRect(root.cx + Math.cos(a) * rr, root.cy - Math.sin(a) * rr * 0.62, 1.2, 1.2);
+                }
+                for (let i = 1; i < root.orbits.length; i++) {
                     const r = root.rx(i);
+                    const marked = i === root.dropTarget || i === root.chosen;
+                    if (i === last && !marked)
+                        continue; // орбіту Церери видно, лише коли її вибрали
                     c.beginPath();
                     c.ellipse(root.cx - r, root.cy - r * 0.62, r * 2, r * 1.24);
                     c.lineWidth = 1;
-                    c.strokeStyle = i === root.dropTarget ? Planets.find(Planets.solar[i]).light
+                    c.strokeStyle = i === root.dropTarget ? Planets.find(Planets.pages[i]).light
                         : i === root.chosen ? root.chosenSpec.light : "#232b33";
                     c.stroke();
                 }
@@ -207,7 +234,7 @@ Item {
         }
 
         Repeater {
-            model: Planets.solar
+            model: Planets.pages
 
             Item {
                 id: body
@@ -225,7 +252,8 @@ Item {
                 y: root.planetY(index)
 
                 ShaderEffect {
-                    // Запас під кільця Сатурна
+                    // Запас під кільця Сатурна. Сонце малюють кола корони вище.
+                    visible: (body.spec.kind ?? 0) !== 1
                     width: body.r * 5
                     height: width
                     x: -width / 2
@@ -241,11 +269,12 @@ Item {
                     property real hasRing: body.spec.ring ? 1 : 0
                     property real hasClouds: body.spec.clouds ? 1 : 0
                     property var cloudMap: cloudImage
-                    property real mode: 1
+                    property real mode: 2 // лише саме тіло, без поля уламків навколо Церери
                     property real drift: 0
                     property color rim: body.spec.light
-                    property var surface: surfaces.count > body.index ? surfaces.itemAt(body.index) : ringImage
+                    property var surface: body.spec.texture && surfaces.count > body.index ? surfaces.itemAt(body.index) : ringImage
                     property var ringMap: ringImage
+                    property real kind: body.spec.kind ?? 0
 
                     fragmentShader: Qt.resolvedUrl("../../shaders/planet.frag.qsb")
                 }
@@ -265,7 +294,7 @@ Item {
                 Text {
                     x: -width / 2
                     y: -body.r - height - (body.picked || body.dropping ? 16 : 6) * root.unit
-                    text: "0" + (body.index + 1)
+                    text: root.num(body.index + 1)
                     color: body.picked || body.dropping ? body.spec.light : body.wins.length ? "#c9d3dc" : "#7f8c98"
                     font.family: Theme.font
                     font.pixelSize: Math.round(12 * root.unit)
@@ -275,7 +304,7 @@ Item {
 
         // Супутники: одне вікно -- один квадрат навколо своєї планети
         Repeater {
-            model: Planets.solar
+            model: Planets.pages
 
             Repeater {
                 id: moons
@@ -294,7 +323,7 @@ Item {
                     width: side
                     height: side
                     visible: !lifted
-                    color: root.hovered === modelData ? Planets.find(Planets.solar[moons.planet]).light : "#c9d3dc"
+                    color: root.hovered === modelData ? Planets.find(Planets.pages[moons.planet]).light : "#c9d3dc"
                 }
             }
         }
@@ -440,7 +469,7 @@ Item {
             height: 28 * root.unit
 
             Text {
-                text: "0" + (root.chosen + 1) + " · " + RightClick.pageName(root.chosen + 1).toUpperCase()
+                text: root.num(root.chosen + 1) + " · " + RightClick.pageName(root.chosen + 1).toUpperCase()
                 color: root.chosenSpec.light
                 font.family: Theme.font
                 font.pixelSize: Math.round(15 * root.unit)
@@ -547,7 +576,7 @@ Item {
         }
 
         Repeater {
-            model: Planets.solar
+            model: Planets.pages
 
             Row {
                 id: row
@@ -559,7 +588,7 @@ Item {
 
                 Text {
                     width: 36 * root.unit
-                    text: "0" + (row.index + 1)
+                    text: root.num(row.index + 1)
                     color: row.tint
                     font.family: Theme.font
                     font.pixelSize: Math.round(13 * root.unit)
@@ -601,12 +630,12 @@ Item {
         height: tag.implicitHeight + 8
         color: "#0b0e12"
         border.width: 1
-        border.color: root.dropTarget >= 0 ? Planets.find(Planets.solar[root.dropTarget]).light : "#4a5763"
+        border.color: root.dropTarget >= 0 ? Planets.find(Planets.pages[root.dropTarget]).light : "#4a5763"
 
         Text {
             id: tag
             anchors.centerIn: parent
-            text: root.windowLabel(root.dragging ? root.carried : root.hovered) + (root.dropTarget >= 0 ? " → 0" + (root.dropTarget + 1) : "")
+            text: root.windowLabel(root.dragging ? root.carried : root.hovered) + (root.dropTarget >= 0 ? " → " + root.num(root.dropTarget + 1) : "")
             color: "#c9d3dc"
             font.family: Theme.font
             font.pixelSize: Math.round(12 * root.unit)

@@ -257,7 +257,7 @@ Scope {
             ShaderEffect {
                 readonly property real body: Math.min(panel.height * 0.11, Math.max(60, panel.height * (Theme.planet.size ?? 0.2) * 0.4))
 
-                visible: panel.orbits && Theme.planet.texture !== undefined
+                visible: panel.orbits && (Theme.planet.texture !== undefined || (Theme.planet.kind ?? 0) > 0)
                 width: body * 5
                 height: width
                 x: panel.cx - width / 2
@@ -275,9 +275,10 @@ Scope {
                 property real mode: 1
                 property real drift: 0
                 property color rim: Theme.planet.light
-                property var surface: surfaceImage
+                property var surface: Theme.planet.texture ? surfaceImage : ringImage
                 property var cloudMap: cloudImage
                 property var ringMap: ringImage
+                property real kind: Theme.planet.kind ?? 0
 
                 fragmentShader: Qt.resolvedUrl("../../shaders/planet.frag.qsb")
             }

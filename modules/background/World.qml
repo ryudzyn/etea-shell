@@ -134,8 +134,9 @@ Item {
         property real mode: 1
         property real drift: 0
         property color rim: spec.light
-        property var surface: surfaces.itemAt(Planets.solar.indexOf(spec.id))
+        property var surface: surfaces.itemAt(Planets.solar.indexOf(spec.id)) ?? ringImage // у Сонця й поясу текстур немає
         property var ringMap: ringImage
+        property real kind: spec.kind ?? 0
 
         fragmentShader: Qt.resolvedUrl("../../shaders/planet.frag.qsb")
     }
@@ -201,6 +202,7 @@ Item {
         property color rim: "#000000"
         property var surface: ringImage
         property var ringMap: ringImage
+        property real kind: 0
 
         fragmentShader: Qt.resolvedUrl("../../shaders/planet.frag.qsb")
     }
