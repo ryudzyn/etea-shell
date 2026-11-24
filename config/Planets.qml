@@ -21,7 +21,10 @@ Singleton {
         { id: "galaxy", deep: true, name: "Галактика", line: "Глибокий космос", skyTop: "#030406", skyMid: "#0a0c10", skyLow: "#14181e", terrain: ["#14181e", "#0e1115", "#090b0e", "#040506"], light: "#b7a6e8" },
         { id: "nebula-dust", deep: true, name: "Туманність", line: "Глибокий космос", skyTop: "#030406", skyMid: "#0a0c10", skyLow: "#14181e", terrain: ["#14181e", "#0e1115", "#090b0e", "#040506"], light: "#d88ab0" },
         { id: "pulsar", deep: true, name: "Пульсар", line: "Глибокий космос", skyTop: "#030406", skyMid: "#0a0c10", skyLow: "#14181e", terrain: ["#14181e", "#0e1115", "#090b0e", "#040506"], light: "#8fc7e8" },
-        { id: "wormhole", deep: true, name: "Кротовина", line: "Глибокий космос", skyTop: "#030406", skyMid: "#0a0c10", skyLow: "#14181e", terrain: ["#14181e", "#0e1115", "#090b0e", "#040506"], light: "#9fd6c8" }
+        { id: "wormhole", deep: true, name: "Кротовина", line: "Глибокий космос", skyTop: "#030406", skyMid: "#0a0c10", skyLow: "#14181e", terrain: ["#14181e", "#0e1115", "#090b0e", "#040506"], light: "#9fd6c8" },
+        // Пейзажі: стоїш на поверхні Землі (шейдери earth-hills/earth-flight у nebula-config)
+        { id: "earth-hills", deep: true, name: "Земля: пагорби", line: "Пейзаж", skyTop: "#030406", skyMid: "#0a0c10", skyLow: "#14181e", terrain: ["#14181e", "#0e1115", "#090b0e", "#040506"], light: "#f0b48c" },
+        { id: "earth-flight", deep: true, name: "Земля: політ", line: "Пейзаж", skyTop: "#030406", skyMid: "#0a0c10", skyLow: "#14181e", terrain: ["#14181e", "#0e1115", "#090b0e", "#040506"], light: "#e8c9a8" }
     ]
 
     function forPage(page) {
