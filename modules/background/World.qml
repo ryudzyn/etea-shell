@@ -144,21 +144,37 @@ Item {
     // Тема "Глибокий космос": шейдер замість планети, 30 кадрів на секунду, за вікнами
     // час стоїть, тож GPU відпочиває
     readonly property string deep: Config.deepSpace
-    readonly property string deepVideo: Planets.deep.find(entry => entry.id === root.deep)?.video ?? ""
-    ShaderEffect {
+    readonly property var deepSpec: Planets.deep.find(entry => entry.id === root.deep) ?? null
+    readonly property string deepVideo: deepSpec?.video ?? ""
+    // "Пейзажі": один шейдер на всі столи, а сцену (поверхню тіла цього столу) задає uniform scene
+    readonly property bool deepPerPage: deepSpec?.perPage ?? false
+
+    component DeepLayer: ShaderEffect {
+        property int forPage: root.arriving
+
         anchors.fill: parent
-        visible: root.deep !== "" && root.deepVideo === "" && root.farOpacity > 0
-        opacity: root.farOpacity
 
         property real time: Planet.deepTime
         property real camOffset: Config.deepAngle
         property vector2d resolution: Qt.vector2d(width, height)
+        property real scene: Math.max(0, Planets.pages.indexOf(Planets.forPage(forPage)))
 
         Behavior on camOffset {
             NumberAnimation { duration: 1400; easing.type: Easing.InOutCubic }
         }
 
         fragmentShader: root.deep && !root.deepVideo ? Qt.resolvedUrl("../../shaders/deep-" + root.deep + ".frag.qsb") : ""
+    }
+    // Пейзаж столу, з якого пішли: лежить під новим, поки той проступає
+    DeepLayer {
+        forPage: root.leaving
+        visible: root.deepPerPage && root.deepVideo === "" && root.flight < 1 && root.farOpacity > 0
+        opacity: root.farOpacity
+    }
+    DeepLayer {
+        forPage: root.arriving
+        visible: root.deep !== "" && root.deepVideo === "" && root.farOpacity > 0
+        opacity: root.farOpacity * (root.deepPerPage ? root.flight : 1)
     }
     // Відео-тема: окремий файл, щоб без QtMultimedia ламалось лише відео, а не весь фон.
     // Лише на справжньому столі (один декодер), за вікнами на паузі, як і шейдери.
