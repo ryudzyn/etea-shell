@@ -32,9 +32,24 @@ Scope {
         implicitHeight: 700
         color: Theme.cardDeep
 
+        // Super+Shift+G, коли вікно вже відкрите: просто перейти на розділ
+        Connections {
+            target: Menus
+            function onSettingsSectionChanged() {
+                if (window.visible && Menus.settingsSection >= 0) {
+                    window.section = Menus.settingsSection;
+                    Menus.settingsSection = -1;
+                }
+            }
+        }
+
         onVisibleChanged: {
             if (!visible)
                 Menus.settingsOpen = false;
+            else if (Menus.settingsSection >= 0) {
+                section = Menus.settingsSection;
+                Menus.settingsSection = -1;
+            }
         }
 
         HandCard {

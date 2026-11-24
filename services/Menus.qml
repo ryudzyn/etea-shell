@@ -12,6 +12,7 @@ Singleton {
     property var trayItem: null // the background app whose menu is open
 
     property bool settingsOpen: false
+    property int settingsSection: -1 // куди відкрити налаштування (0 -- "Світ"), -1 -- де був
     property bool sessionOpen: false
     property string lastClosed: ""
 

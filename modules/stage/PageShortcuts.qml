@@ -48,6 +48,12 @@ Scope {
         function toggle(): void {
             Menus.settingsOpen = !Menus.settingsOpen;
         }
+
+        // Super+Shift+G: вибір шпалери -- розділ "Світ"
+        function world(): void {
+            Menus.settingsSection = 0;
+            Menus.settingsOpen = true;
+        }
     }
 
     IpcHandler {

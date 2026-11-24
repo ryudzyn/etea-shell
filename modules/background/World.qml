@@ -144,9 +144,10 @@ Item {
     // Тема "Глибокий космос": шейдер замість планети, 30 кадрів на секунду, за вікнами
     // час стоїть, тож GPU відпочиває
     readonly property string deep: Config.deepSpace
+    readonly property string deepVideo: Planets.deep.find(entry => entry.id === root.deep)?.video ?? ""
     ShaderEffect {
         anchors.fill: parent
-        visible: root.deep !== "" && root.farOpacity > 0
+        visible: root.deep !== "" && root.deepVideo === "" && root.farOpacity > 0
         opacity: root.farOpacity
 
         property real time: Planet.deepTime
@@ -157,7 +158,19 @@ Item {
             NumberAnimation { duration: 1400; easing.type: Easing.InOutCubic }
         }
 
-        fragmentShader: root.deep ? Qt.resolvedUrl("../../shaders/deep-" + root.deep + ".frag.qsb") : ""
+        fragmentShader: root.deep && !root.deepVideo ? Qt.resolvedUrl("../../shaders/deep-" + root.deep + ".frag.qsb") : ""
+    }
+    // Відео-тема: окремий файл, щоб без QtMultimedia ламалось лише відео, а не весь фон.
+    // Лише на справжньому столі (один декодер), за вікнами на паузі, як і шейдери.
+    Loader {
+        anchors.fill: parent
+        active: root.interactive && root.deepVideo !== ""
+        opacity: root.farOpacity
+        source: "DeepVideo.qml"
+        onLoaded: {
+            item.source = Qt.binding(() => "file://" + Quickshell.shellPath("assets/video/" + root.deepVideo));
+            item.playing = Qt.binding(() => Planet.pageEmpty && root.visible);
+        }
     }
     // Зорі шейдерів яскраві: за колонками віджетів трохи затемнюємо, щоб текст читався
     Repeater {
@@ -180,7 +193,7 @@ Item {
     Timer {
         interval: 33
         repeat: true
-        running: root.interactive && root.deep !== "" && Planet.pageEmpty && root.visible
+        running: root.interactive && root.deep !== "" && root.deepVideo === "" && Planet.pageEmpty && root.visible
         onTriggered: Planet.deepTime += 0.033
     }
 

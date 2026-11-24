@@ -54,7 +54,7 @@ Singleton {
             ] },
             { label: Lang.t("Système solaire"), run: () => Planet.toggleOrbit() },
             { label: Lang.t("Widgets"), detail: "›", items: widgets.length ? widgets.map(entry => ({ label: entry.label, detail: "+", run: () => Desk.add(entry.type) })) : [{ label: Lang.t("Tout est déjà dans le ciel.") }] },
-            { label: Lang.t("Fond d'écran spatial"), run: () => exec("nebula-space-wallpaper") },
+            { label: Lang.t("Fond d'écran spatial"), run: () => { Menus.settingsSection = 0; Menus.settingsOpen = true; } },
             { label: Lang.t("Capture d'écran"), run: () => Menus.captureOpen = true },
             { label: Lang.t("Presse-papiers"), run: () => Menus.clipboardOpen = true },
             { label: Lang.t("Réglages"), run: () => Menus.settingsOpen = true },

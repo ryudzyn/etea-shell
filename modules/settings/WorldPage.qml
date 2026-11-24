@@ -22,7 +22,7 @@ ColumnLayout {
     Text {
         Layout.fillWidth: true
         wrapMode: Text.Wrap
-        text: "Super + Shift + G -- те саме через меню. Super + G повертає камеру шейдера."
+        text: "Super + Shift + G відкриває цей розділ. Super + G повертає камеру шейдера."
         color: Qt.alpha(Theme.text, 0.65)
         font.family: Theme.font
         font.pixelSize: 13

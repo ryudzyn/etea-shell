@@ -24,7 +24,10 @@ Singleton {
         { id: "wormhole", deep: true, name: "Кротовина", line: "Глибокий космос", skyTop: "#030406", skyMid: "#0a0c10", skyLow: "#14181e", terrain: ["#14181e", "#0e1115", "#090b0e", "#040506"], light: "#9fd6c8" },
         // Пейзажі: стоїш на поверхні Землі (шейдери earth-hills/earth-flight у nebula-config)
         { id: "earth-hills", deep: true, name: "Земля: пагорби", line: "Пейзаж", skyTop: "#030406", skyMid: "#0a0c10", skyLow: "#14181e", terrain: ["#14181e", "#0e1115", "#090b0e", "#040506"], light: "#f0b48c" },
-        { id: "earth-flight", deep: true, name: "Земля: політ", line: "Пейзаж", skyTop: "#030406", skyMid: "#0a0c10", skyLow: "#14181e", terrain: ["#14181e", "#0e1115", "#090b0e", "#040506"], light: "#e8c9a8" }
+        { id: "earth-flight", deep: true, name: "Земля: політ", line: "Пейзаж", skyTop: "#030406", skyMid: "#0a0c10", skyLow: "#14181e", terrain: ["#14181e", "#0e1115", "#090b0e", "#040506"], light: "#e8c9a8" },
+        // Справжні відео NASA SVS (public domain), файли кладе збірка в assets/video
+        { id: "earth-nasa", deep: true, video: "earth-spin-nasa.mp4", name: "Земля (NASA)", line: "Відео", skyTop: "#030406", skyMid: "#0a0c10", skyLow: "#14181e", terrain: ["#14181e", "#0e1115", "#090b0e", "#040506"], light: "#7fb2d9" },
+        { id: "blackhole-nasa", deep: true, video: "blackhole-nasa.mp4", name: "Чорна діра (NASA)", line: "Відео", skyTop: "#030406", skyMid: "#0a0c10", skyLow: "#14181e", terrain: ["#14181e", "#0e1115", "#090b0e", "#040506"], light: "#e8b27a" }
     ]
 
     function forPage(page) {
