@@ -194,14 +194,19 @@ Item {
         Rectangle {
             required property var modelData
             x: modelData.left ? 0 : root.width - width
-            width: root.width * 0.24
+            width: root.width * (root.deepPerPage ? 0.3 : 0.24)
             height: root.height
             opacity: root.farOpacity
+            // У пейзажах світлі сцени: тінь слабша й сходить поступово, без видимого краю
+            readonly property real edgeDark: root.deepPerPage ? 0.62 : 0.78
+            readonly property real midDark: root.deepPerPage ? 0.34 : 0.66
+            readonly property real midAt: root.deepPerPage ? 0.45 : 0.72
             gradient: Gradient {
                 orientation: Gradient.Horizontal
-                GradientStop { position: 0; color: Qt.rgba(0, 0, 0, modelData.left ? 0.78 : 0) }
-                GradientStop { position: modelData.left ? 0.72 : 0.28; color: Qt.rgba(0, 0, 0, 0.66) }
-                GradientStop { position: 1; color: Qt.rgba(0, 0, 0, modelData.left ? 0 : 0.78) }
+                GradientStop { position: 0; color: Qt.rgba(0, 0, 0, modelData.left ? edgeDark : 0) }
+                GradientStop { position: modelData.left ? midAt : 1 - midAt; color: Qt.rgba(0, 0, 0, midDark) }
+                GradientStop { position: modelData.left ? 0.8 : 0.2; color: Qt.rgba(0, 0, 0, midDark * (root.deepPerPage ? 0.25 : 0.714)) } // без пейзажів -- та сама пряма, що й раніше
+                GradientStop { position: 1; color: Qt.rgba(0, 0, 0, modelData.left ? 0 : edgeDark) }
             }
         }
     }

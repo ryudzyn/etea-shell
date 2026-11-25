@@ -6,7 +6,13 @@ import Quickshell.Hyprland
 
 // The whole look of ETEA lives here. Later on, every planet gets its own.
 Singleton {
-    readonly property var planet: Planets.find(Config.preview || Config.deepSpace || Planets.forPage(Hyprland.focusedWorkspace?.id ?? 1))
+    readonly property string pageBody: Planets.forPage(Hyprland.focusedWorkspace?.id ?? 1)
+    // "Пейзажі": один шейдер на всі столи, але колір і довідка в кожного столу свої
+    readonly property var planet: {
+        const spec = Planets.find(Config.preview || Config.deepSpace || pageBody);
+        const surface = !Config.preview && spec.perPage ? spec.surfaces?.[pageBody] : null;
+        return surface ? Object.assign({}, spec, { light: surface.light, surface: surface }) : spec;
+    }
     readonly property real pace: Config.pace === "ceremony" ? 1.7 : 1 // stretches the big movements
 
     // That sunset from the mockup, plus the grain that gives it some texture

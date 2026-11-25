@@ -26,7 +26,21 @@ Singleton {
         { id: "earth-hills", deep: true, name: "Земля: пагорби", line: "Пейзаж", skyTop: "#030406", skyMid: "#0a0c10", skyLow: "#14181e", terrain: ["#14181e", "#0e1115", "#090b0e", "#040506"], light: "#f0b48c" },
         { id: "earth-flight", deep: true, name: "Земля: політ", line: "Пейзаж", skyTop: "#030406", skyMid: "#0a0c10", skyLow: "#14181e", terrain: ["#14181e", "#0e1115", "#090b0e", "#040506"], light: "#e8c9a8" },
         // Один шейдер, десять сцен: на кожному столі стоїш на поверхні його тіла (landscape.frag у nebula-config)
-        { id: "landscape", deep: true, perPage: true, name: "Пейзажі", line: "Кожен стіл -- своя поверхня", skyTop: "#030406", skyMid: "#0a0c10", skyLow: "#14181e", terrain: ["#14181e", "#0e1115", "#090b0e", "#040506"], light: "#e8a070" },
+        { id: "landscape", deep: true, perPage: true, name: "Пейзажі", line: "Кожен стіл -- своя поверхня", skyTop: "#030406", skyMid: "#0a0c10", skyLow: "#14181e", terrain: ["#14181e", "#0e1115", "#090b0e", "#040506"], light: "#e8a070",
+          // Акцент кожної сцени (віджети, світло вікна) і довідка про місце, де стоїш.
+          // event -- живий рядок, що йде в такт із шейдером (той самий Planet.deepTime).
+          surfaces: {
+              sun: { light: "#ffb060", name: "Фотосфера", where: "Сонце", temp: "5 500 °C", g: "27.9 g", day: "25.4 д", sky: "коронні дуги", event: "eruption" },
+              mercury: { light: "#ece4d8", name: "Меркурій", where: "рівнина Калорис", temp: "+430 °C", g: "0.38 g", day: "176 д", sky: "Сонце втричі більше", event: "comet" },
+              venus: { light: "#ffd086", name: "Венера", where: "гори Максвелла", temp: "+464 °C", g: "0.90 g", day: "117 д", sky: "сірчані хмари, грози" },
+              earth: { light: "#ffc4a4", name: "Земля", where: "Карпати", temp: "+8 °C", g: "1.00 g", day: "24 г", sky: "Місяць, зорепад" },
+              mars: { light: "#a8c4f0", name: "Марс", where: "кратер Ґейл", temp: "−63 °C", g: "0.38 g", day: "24 г 40 хв", sky: "Фобос, блакитний захід" },
+              jupiter: { light: "#f2d4a8", name: "Європа", where: "супутник Юпітера", temp: "−160 °C", g: "0.13 g", day: "3.55 д", sky: "Юпітер", event: "io" },
+              saturn: { light: "#d2e8ff", name: "Енцелад", where: "тигрові смуги", temp: "−198 °C", g: "0.011 g", day: "1.37 д", sky: "Сатурн, гейзери", event: "comet" },
+              uranus: { light: "#aee6ea", name: "Міранда", where: "урвище Верона", temp: "−187 °C", g: "0.008 g", day: "1.41 д", sky: "Уран", event: "comet" },
+              neptune: { light: "#96b4ff", name: "Тритон", where: "супутник Нептуна", temp: "−235 °C", g: "0.08 g", day: "5.88 д (ретр.)", sky: "Нептун, азотні струмені", event: "comet" },
+              belt: { light: "#e2d8c8", name: "Церера", where: "гора Ахуна", temp: "−105 °C", g: "0.03 g", day: "9 г 04 хв", sky: "уламки поясу", event: "comet" }
+          } },
         // Справжні відео NASA SVS (public domain), файли кладе збірка в assets/video
         { id: "earth-nasa", deep: true, video: "earth-spin-nasa.mp4", name: "Земля (NASA)", line: "Відео", skyTop: "#030406", skyMid: "#0a0c10", skyLow: "#14181e", terrain: ["#14181e", "#0e1115", "#090b0e", "#040506"], light: "#7fb2d9" },
         { id: "blackhole-nasa", deep: true, video: "blackhole-nasa.mp4", name: "Чорна діра (NASA)", line: "Відео", skyTop: "#030406", skyMid: "#0a0c10", skyLow: "#14181e", terrain: ["#14181e", "#0e1115", "#090b0e", "#040506"], light: "#e8b27a" }
