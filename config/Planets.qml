@@ -28,12 +28,13 @@ Singleton {
         // Один шейдер, десять сцен: на кожному столі стоїш на поверхні його тіла (landscape.frag у nebula-config)
         { id: "landscape", deep: true, perPage: true, name: "Пейзажі", line: "Кожен стіл -- своя поверхня", skyTop: "#030406", skyMid: "#0a0c10", skyLow: "#14181e", terrain: ["#14181e", "#0e1115", "#090b0e", "#040506"], light: "#e8a070",
           // Акцент кожної сцени (віджети, світло вікна) і довідка про місце, де стоїш.
+          // shade -- наскільки темнити небо під віджетами (світлим сценам більше).
           // event -- живий рядок, що йде в такт із шейдером (той самий Planet.deepTime).
           surfaces: {
-              sun: { light: "#ffb060", name: "Фотосфера", where: "Сонце", temp: "5 500 °C", g: "27.9 g", day: "25.4 д", sky: "коронні дуги", event: "eruption" },
+              sun: { light: "#ffb060", shade: 0.58, name: "Фотосфера", where: "Сонце", temp: "5 500 °C", g: "27.9 g", day: "25.4 д", sky: "коронні дуги", event: "eruption" },
               mercury: { light: "#ece4d8", name: "Меркурій", where: "рівнина Калорис", temp: "+430 °C", g: "0.38 g", day: "176 д", sky: "Сонце втричі більше", event: "comet" },
-              venus: { light: "#ffd086", name: "Венера", where: "гори Максвелла", temp: "+464 °C", g: "0.90 g", day: "117 д", sky: "сірчані хмари, грози" },
-              earth: { light: "#ffc4a4", name: "Земля", where: "Карпати", temp: "+8 °C", g: "1.00 g", day: "24 г", sky: "Місяць, зорепад" },
+              venus: { light: "#ffd086", shade: 0.5, name: "Венера", where: "гори Максвелла", temp: "+464 °C", g: "0.90 g", day: "117 д", sky: "сірчані хмари, грози" },
+              earth: { light: "#ffc4a4", shade: 0.4, name: "Земля", where: "Карпати", temp: "+8 °C", g: "1.00 g", day: "24 г", sky: "Місяць, зорепад" },
               mars: { light: "#a8c4f0", name: "Марс", where: "кратер Ґейл", temp: "−63 °C", g: "0.38 g", day: "24 г 40 хв", sky: "Фобос, блакитний захід" },
               jupiter: { light: "#f2d4a8", name: "Європа", where: "супутник Юпітера", temp: "−160 °C", g: "0.13 g", day: "3.55 д", sky: "Юпітер", event: "io" },
               saturn: { light: "#d2e8ff", name: "Енцелад", where: "тигрові смуги", temp: "−198 °C", g: "0.011 g", day: "1.37 д", sky: "Сатурн, гейзери", event: "comet" },

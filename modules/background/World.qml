@@ -198,8 +198,12 @@ Item {
             height: root.height
             opacity: root.farOpacity
             // У пейзажах світлі сцени: тінь слабша й сходить поступово, без видимого краю
-            readonly property real edgeDark: root.deepPerPage ? 0.62 : 0.78
-            readonly property real midDark: root.deepPerPage ? 0.34 : 0.66
+            property real surfaceShade: Theme.planet.surface?.shade ?? 0.34
+            readonly property real edgeDark: root.deepPerPage ? Math.min(0.85, surfaceShade + 0.28) : 0.78
+            readonly property real midDark: root.deepPerPage ? surfaceShade : 0.66
+            Behavior on surfaceShade {
+                NumberAnimation { duration: 800 }
+            }
             readonly property real midAt: root.deepPerPage ? 0.45 : 0.72
             gradient: Gradient {
                 orientation: Gradient.Horizontal
